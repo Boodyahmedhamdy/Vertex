@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +12,14 @@ android {
     namespace = "com.iti.vertex"
     compileSdk = 35
 
+    val localProperties = rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(localProperties.inputStream())
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.iti.vertex"
         minSdk = 24
@@ -18,7 +28,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
     }
+
+
 
     buildTypes {
         release {

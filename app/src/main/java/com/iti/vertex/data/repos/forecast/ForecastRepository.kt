@@ -1,4 +1,4 @@
-package com.iti.vertex.data.repos
+package com.iti.vertex.data.repos.forecast
 
 import com.iti.vertex.data.dtos.FullForecastResponse
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource

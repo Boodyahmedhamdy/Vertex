@@ -31,7 +31,7 @@ fun PlaceholderScreen(
 
         Text(
             text = title,
-            style = MaterialTheme.typography.displayMedium
+//            style = MaterialTheme.typography.displayMedium
         )
 
         Spacer(Modifier.height(16.dp))

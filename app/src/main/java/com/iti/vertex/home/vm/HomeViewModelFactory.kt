@@ -2,8 +2,9 @@ package com.iti.vertex.home.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.iti.vertex.data.repos.IForecastRepository
+import com.iti.vertex.data.repos.forecast.IForecastRepository
 
+@Suppress("UNCHECKED_CAST")
 class HomeViewModelFactory(
     private val repository: IForecastRepository
 ): ViewModelProvider.Factory {

@@ -15,11 +15,11 @@ data class SimpleForecastItem(
     @SerializedName("pop")
     val pop: Int = 0,
     @SerializedName("sys")
-    val sys: Sys = Sys(),
+    val simpleSys: SimpleSys = SimpleSys(),
     @SerializedName("visibility")
     val visibility: Int = 0,
     @SerializedName("weather")
     val weather: List<Weather> = listOf(),
     @SerializedName("wind")
-    val wind: Wind = Wind()
+    val detailedWind: DetailedWind = DetailedWind()
 )

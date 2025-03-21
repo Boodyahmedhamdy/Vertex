@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.iti.vertex.alarms.screens.AlarmsScreen
-import com.iti.vertex.data.repos.ForecastRepository
+import com.iti.vertex.data.repos.forecast.ForecastRepository
 import com.iti.vertex.data.sources.remote.api.RetrofitHelper
 import com.iti.vertex.data.sources.remote.forecast.ForecastRemoteDataSource
 import com.iti.vertex.favorite.screens.FavoritesScreen
@@ -40,7 +40,8 @@ fun VertexNavHost(
             val state = viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
                 state = state.value,
-                modifier = modifier
+                modifier = modifier,
+                onRefresh = {}
             )
         }
 
