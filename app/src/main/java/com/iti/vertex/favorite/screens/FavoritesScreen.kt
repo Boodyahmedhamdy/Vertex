@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import com.iti.vertex.ui.components.PlaceholderScreen
 
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
+fun FavoritesScreen(modifier: Modifier = Modifier, onAddToFavoriteButtonClicked: () -> Unit) {
     PlaceholderScreen(
         title = "FavoriteScreen",
-        onPrimaryButtonClicked = { TODO() },
+        onPrimaryButtonClicked = { onAddToFavoriteButtonClicked() },
         onSecondaryButtonClicked = { TODO() },
         modifier = modifier
     )

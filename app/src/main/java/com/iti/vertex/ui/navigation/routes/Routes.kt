@@ -17,4 +17,7 @@ import kotlinx.serialization.Serializable
 
     @Serializable
     object SettingsScreenRoute: Routes(R.string.settings)
+
+    @Serializable
+    object LocationPickerScreenRoute: Routes(R.string.location_picker)
 }

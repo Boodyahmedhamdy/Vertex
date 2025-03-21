@@ -1,19 +1,23 @@
 package com.iti.vertex
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,10 +44,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val backStackEntry by  navController.currentBackStackEntryAsState()
-            val route = backStackEntry?.toRoute<Routes>() ?: Routes.HomeScreenRoute
-            var titleState by rememberSaveable {
-                mutableStateOf(getString(route.title))
+            val currentRoute by remember {
+                derivedStateOf { backStackEntry?.toRoute<Routes>() ?: Routes.HomeScreenRoute }
             }
+            var titleState by rememberSaveable {
+                mutableStateOf(getString(currentRoute.title))
+            }
+            // route doesn't update
+            Log.i(TAG, "onCreate: route: ${currentRoute.title} ${getString(currentRoute.title)}")
 
             VertexTheme {
                 Scaffold(
@@ -51,6 +59,13 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Text(text = titleState)
+                            },
+                            navigationIcon = {
+                                if(currentRoute is Routes.LocationPickerScreenRoute) {
+                                    IconButton(onClick = { navController.navigateUp() }) {
+                                        Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
+                                    }
+                                }
                             }
                         )
                     },
@@ -86,6 +101,7 @@ class MainActivity : ComponentActivity() {
 
                     VertexNavHost(
                         navController = navController,
+                        onAddToFavoriteButtonClicked = {navController.navigate(Routes.LocationPickerScreenRoute)},
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
@@ -94,21 +110,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    VertexTheme {
-        Greeting("Android")
     }
 }
