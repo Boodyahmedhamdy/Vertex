@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Vertex</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorite</string>
+    <string name="alarms">Alarms</string>
+    <string name="settings">Settings</string>
 </resources>
