@@ -7,8 +7,10 @@ import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.iti.vertex.alarms.screens.AlarmsScreen
 import com.iti.vertex.favorite.screens.FavoritesScreen
 import com.iti.vertex.home.screens.HomeScreen
+import com.iti.vertex.settings.screens.SettingsScreen
 import com.iti.vertex.ui.navigation.routes.Routes
 
 @Composable
@@ -30,11 +32,11 @@ fun VertexNavHost(
         }
 
         composable<Routes.AlarmsScreenRoute> {
-
+            AlarmsScreen(modifier = modifier)
         }
 
         composable<Routes.SettingsScreenRoute> {
-
+            SettingsScreen(modifier = modifier)
         }
     }
 

@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,16 +31,17 @@ import com.iti.vertex.ui.navigation.routes.Routes
 import com.iti.vertex.ui.navigation.routes.topLevelRoutes
 import com.iti.vertex.ui.theme.VertexTheme
 
+private const val TAG = "MainActivity"
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             val navController = rememberNavController()
             val backStackEntry by  navController.currentBackStackEntryAsState()
-            var titleState by remember {
-                val route = backStackEntry?.toRoute<Routes>() ?: Routes.HomeScreenRoute
+            val route = backStackEntry?.toRoute<Routes>() ?: Routes.HomeScreenRoute
+            var titleState by rememberSaveable {
                 mutableStateOf(getString(route.title))
             }
 
@@ -48,23 +50,26 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = {
-                                /*val route = backStackEntry?.toRoute<Routes>() ?: Routes.HomeScreenRoute
-                                titleState = getString(route.title)*/
                                 Text(text = titleState)
                             }
                         )
                     },
                     bottomBar = {
                         NavigationBar {
-                            val currentDistenation = backStackEntry?.destination
+                            val currentDestination = backStackEntry?.destination
                             topLevelRoutes.forEach { topLevelRoute ->
+                                val isSelected = currentDestination?.hierarchy?.any {
+                                    it.hasRoute(topLevelRoute.route::class)
+                                } ?: true
                                 NavigationBarItem(
-                                    icon = { Icon(imageVector = topLevelRoute.icon, contentDescription = null) },
-                                    selected = currentDistenation?.hierarchy?.any {
-                                        it.hasRoute(topLevelRoute.route::class)
-                                    } ?: true,
+                                    icon = { Icon(imageVector = if(isSelected) topLevelRoute.selectedIcon else topLevelRoute.unSelectedIcon, contentDescription = null) },
+
+                                    selected = isSelected,
+
                                     label = { Text(text = getString(topLevelRoute.name)) },
+
                                     onClick = {
+                                        titleState = getString(topLevelRoute.name)
                                         navController.navigate(topLevelRoute.route) {
                                             launchSingleTop = true
                                             restoreState = true
@@ -76,11 +81,14 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     modifier = Modifier.fillMaxSize()
+
                 ) { innerPadding ->
 
                     VertexNavHost(
                         navController = navController,
-                        modifier = Modifier.fillMaxSize().padding(innerPadding)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
                     )
 
                 }
