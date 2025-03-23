@@ -1,7 +1,10 @@
 package com.iti.vertex.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -40,8 +43,10 @@ fun VertexNavHost(
             val state = viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
                 state = state.value,
-                modifier = modifier,
-                onRefresh = {}
+                modifier = modifier.padding(8.dp),
+                onRefresh = {
+                    viewModel.refresh()
+                }
             )
         }
 

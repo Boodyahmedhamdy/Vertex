@@ -6,6 +6,7 @@ import com.iti.vertex.data.dtos.Clouds
 import com.iti.vertex.data.dtos.Coord
 import com.iti.vertex.data.dtos.MainData
 import com.iti.vertex.data.dtos.Weather
+import com.iti.vertex.home.states.CurrentWeatherUiState
 
 data class CurrentWeatherResponse(
     @SerializedName("base")
@@ -34,4 +35,17 @@ data class CurrentWeatherResponse(
     val weather: List<Weather> = listOf(),
     @SerializedName("wind")
     val simpleWind: SimpleWind = SimpleWind()
-)
+) {
+    fun toCurrentWeatherUiState(): CurrentWeatherUiState {
+        return CurrentWeatherUiState(
+            visibility = visibility,
+            date = dt,
+            name = name,
+            weather = if (weather.isEmpty()) Weather() else weather.first(),
+            mainData = main,
+            wind = simpleWind,
+            clouds = clouds,
+            sys = detailedSys,
+        )
+    }
+}

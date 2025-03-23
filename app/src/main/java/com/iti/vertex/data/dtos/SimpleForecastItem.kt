@@ -12,8 +12,6 @@ data class SimpleForecastItem(
     val dtTxt: String = "",
     @SerializedName("main")
     val mainData: MainData = MainData(),
-    @SerializedName("pop")
-    val pop: Int = 0,
     @SerializedName("sys")
     val simpleSys: SimpleSys = SimpleSys(),
     @SerializedName("visibility")

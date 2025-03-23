@@ -2,6 +2,7 @@ package com.iti.vertex.data.dtos
 
 
 import com.google.gson.annotations.SerializedName
+import com.iti.vertex.home.states.ForecastUiState
 
 data class FullForecastResponse(
     @SerializedName("city")
@@ -14,4 +15,11 @@ data class FullForecastResponse(
     val list: List<SimpleForecastItem> = listOf(),
     @SerializedName("message")
     val message: Int = 0
-)
+) {
+    fun toUiState(): ForecastUiState {
+        return ForecastUiState(
+            city = city,
+            list = list
+        )
+    }
+}

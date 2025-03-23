@@ -1,6 +1,7 @@
 package com.iti.vertex.data.repos.forecast
 
 import com.iti.vertex.data.dtos.FullForecastResponse
+import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource
 
 class ForecastRepository(
@@ -13,6 +14,15 @@ class ForecastRepository(
             return data
         } catch (ex: Exception) {
             return FullForecastResponse()
+        }
+    }
+
+    override suspend fun getCurrentWeather(lat: Double, long: Double): CurrentWeatherResponse {
+        try {
+            val data = remoteDataSource.getCurrentWeather(lat = lat, long = long)
+            return data
+        } catch (ex: Exception) {
+            return CurrentWeatherResponse()
         }
     }
 
