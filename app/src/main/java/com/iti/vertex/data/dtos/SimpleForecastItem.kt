@@ -17,7 +17,7 @@ data class SimpleForecastItem(
     @SerializedName("visibility")
     val visibility: Int = 0,
     @SerializedName("weather")
-    val weather: List<Weather> = listOf(),
+    val weather: List<Weather> = listOf(Weather()),
     @SerializedName("wind")
     val detailedWind: DetailedWind = DetailedWind()
 )

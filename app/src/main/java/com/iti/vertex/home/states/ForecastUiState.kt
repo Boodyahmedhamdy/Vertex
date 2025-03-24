@@ -8,5 +8,5 @@ import com.iti.vertex.data.dtos.SimpleForecastItem
 
 data class ForecastUiState(
     val city: City = City(),
-    val list: List<SimpleForecastItem> = listOf()
+    val list: List<SimpleForecastItem> = listOf(SimpleForecastItem())
 )

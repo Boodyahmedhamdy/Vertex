@@ -10,18 +10,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.iti.vertex.R
 import com.iti.vertex.data.dtos.FullForecastResponse
 import com.iti.vertex.data.dtos.MainData
 import com.iti.vertex.data.dtos.SimpleForecastItem
 import com.iti.vertex.data.dtos.Weather
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
 import com.iti.vertex.home.components.CurrentWeatherSection
+import com.iti.vertex.home.components.ForecastSectionDay
 import com.iti.vertex.home.states.HomeScreenUiState
 import com.iti.vertex.ui.theme.VertexTheme
 
@@ -45,7 +50,10 @@ fun HomeScreen(
             }
         } else {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 8.dp).fillMaxSize()
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 8.dp)
+                    .fillMaxSize()
             ) {
                 CurrentWeatherSection(
                     state = state.currentWeatherUiState,
@@ -56,9 +64,14 @@ fun HomeScreen(
                     state = state.currentWeatherUiState.toConditionsList()
                 )
 
-                CurrentWeatherConditionsSection(
-                    state = state.currentWeatherUiState.toConditionsList()
+
+                Text(
+                    text = stringResource(R.string.forecast_for_5_days),
+                    style = MaterialTheme.typography.titleLarge
                 )
+                for(entry in state.forecastMap) {
+                    ForecastSectionDay(title = entry.key, state = entry.value)
+                }
 
             }
         }

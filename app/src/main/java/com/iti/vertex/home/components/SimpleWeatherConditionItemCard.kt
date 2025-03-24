@@ -22,7 +22,7 @@ fun SimpleWeatherConditionItemCard(
 ) {
     val context = LocalContext.current
     Card(
-        modifier = modifier.padding(8.dp).border(width = 2.dp, color = Color.Black)
+        modifier = modifier.padding(8.dp)
     ) {
         Image(
             painter = painterResource(id = state.imgResId),

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iti.vertex.data.repos.forecast.IForecastRepository
+import com.iti.vertex.home.getForecastMap
 import com.iti.vertex.home.states.CurrentWeatherUiState
 import com.iti.vertex.home.states.HomeScreenUiState
 import kotlinx.coroutines.Dispatchers
@@ -30,17 +31,19 @@ class HomeViewModel(
 
 
     fun loadForecast() {
+
         Log.i(TAG, "loadForecast: called")
         viewModelScope.launch {
             updateIsLoading(true)
             val data = repository.getForecast(
                 lat = _state.value.lat,
                 long = _state.value.long
-            )
+            ).toUiState()
             withContext(Dispatchers.IO) {
                 _state.update {
                     it.copy(
-                        forecastUiState = data.toUiState()
+                        forecastUiState = data,
+                        forecastMap = getForecastMap(data.list)
                     )
                 }
             updateIsLoading(false)
@@ -72,12 +75,9 @@ class HomeViewModel(
 
     fun refresh() {
         viewModelScope.launch {
-            updateIsLoading(true)
-            updateIsRefreshing(true)
+            _state.update { it.copy(isRefreshing = true, isLoading = true) }
             delay(1000)
-            updateIsRefreshing(false)
-            updateIsLoading(false)
-
+            _state.update { it.copy(isRefreshing = false, isLoading = false) }
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -15,16 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.iti.vertex.R
-import com.iti.vertex.data.dtos.SimpleForecastItem
-import com.iti.vertex.data.dtos.Weather
+
 import com.iti.vertex.home.states.CurrentWeatherUiState
 import com.iti.vertex.home.toWeatherIconUrl
 import java.time.LocalDate
@@ -59,22 +60,31 @@ fun CurrentWeatherCard(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
             ) {
 
-                Text(text = state.weather.description)
+                // description
+                Text(text = state.weather.description, modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
 
+                // temperature
                 Text(
                     text = "${state.mainData.temp}",
                     style = MaterialTheme.typography.displayLarge,
                     fontWeight = FontWeight.Bold
                 )
 
-                Text(text = state.name)
+                // feels like
+                Text(text = stringResource(R.string.feels_like, state.mainData.feelsLike), fontWeight = FontWeight.Thin)
+
+                // city name
+                Text(text = state.name, modifier = Modifier.padding(8.dp))
 
                 // Date and time
                 Text(
-                    text = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                    text = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                    modifier = Modifier.padding(8.dp)
                 )
             }
         }
