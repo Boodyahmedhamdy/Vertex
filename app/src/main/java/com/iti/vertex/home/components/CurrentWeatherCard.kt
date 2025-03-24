@@ -1,5 +1,6 @@
 package com.iti.vertex.home.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -22,7 +24,10 @@ import com.iti.vertex.data.dtos.SimpleForecastItem
 import com.iti.vertex.data.dtos.Weather
 import com.iti.vertex.home.states.CurrentWeatherUiState
 import com.iti.vertex.home.toWeatherIconUrl
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@SuppressLint("NewApi")
 @Composable
 fun CurrentWeatherCard(
     state: CurrentWeatherUiState,
@@ -38,7 +43,7 @@ fun CurrentWeatherCard(
         ){
             // image
             AsyncImage(
-                model = /*state.weather.icon.toWeatherIconUrl()*/ "https://openweathermap.org/img/wn/10d@2x.png",
+                model = state.weather.icon.toWeatherIconUrl(),
                 contentDescription = state.weather.description,
                 placeholder = painterResource(R.drawable.baseline_downloading_24),
                 error = painterResource(R.drawable.baseline_broken_image_24),
@@ -57,11 +62,17 @@ fun CurrentWeatherCard(
 
                 Text(
                     text = "${state.mainData.temp}",
-                    style = MaterialTheme.typography.displayLarge
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(text = state.name)
+
+                // Date and time
+                Text(
+                    text = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
                 )
             }
-
-
         }
     }
 

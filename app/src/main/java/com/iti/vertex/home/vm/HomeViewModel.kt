@@ -33,7 +33,10 @@ class HomeViewModel(
         Log.i(TAG, "loadForecast: called")
         viewModelScope.launch {
             updateIsLoading(true)
-            val data = repository.getForecast(lat = 30.0444, long = 31.2357)
+            val data = repository.getForecast(
+                lat = _state.value.lat,
+                long = _state.value.long
+            )
             withContext(Dispatchers.IO) {
                 _state.update {
                     it.copy(
@@ -75,6 +78,14 @@ class HomeViewModel(
             updateIsRefreshing(false)
             updateIsLoading(false)
 
+        }
+    }
+
+    fun setLatLong(lat: Double, long: Double) {
+        _state.update {
+            it.copy(
+                lat = lat, long = long
+            )
         }
     }
 

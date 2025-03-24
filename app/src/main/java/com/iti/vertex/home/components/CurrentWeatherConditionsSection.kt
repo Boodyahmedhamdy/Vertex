@@ -30,6 +30,7 @@ fun CurrentWeatherConditionsSection(
     ) {
         FlowRow (
             maxItemsInEachRow = 3,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
             state.forEach {
@@ -39,12 +40,6 @@ fun CurrentWeatherConditionsSection(
             }
         }
 
-        /*LazyVerticalGrid(
-            columns = GridCells.Adaptive(150.dp)
-        ) {
-
-
-        }*/
     }
 
 }

@@ -27,11 +27,6 @@ fun CurrentWeatherSection(
     ) {
         CurrentWeatherCard(state = state)
 
-        // Date and time
-        Text(
-            text = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-        )
-
     }
 
 

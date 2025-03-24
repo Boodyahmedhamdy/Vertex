@@ -6,5 +6,6 @@ data class HomeScreenUiState(
     val forecastUiState: ForecastUiState = ForecastUiState(),
     val currentWeatherUiState: CurrentWeatherUiState = CurrentWeatherUiState(),
     val isRefreshing: Boolean = false,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val lat: Double = 0.0, val long: Double = 0.0
 )

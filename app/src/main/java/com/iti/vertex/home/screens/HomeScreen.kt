@@ -1,5 +1,7 @@
 package com.iti.vertex.home.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,7 @@ import com.iti.vertex.home.components.CurrentWeatherSection
 import com.iti.vertex.home.states.HomeScreenUiState
 import com.iti.vertex.ui.theme.VertexTheme
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -42,11 +45,15 @@ fun HomeScreen(
             }
         } else {
             Column(
-                modifier = modifier.verticalScroll(rememberScrollState()).padding(horizontal = 8.dp).fillMaxSize()
+                modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 8.dp).fillMaxSize()
             ) {
                 CurrentWeatherSection(
                     state = state.currentWeatherUiState,
                     modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                CurrentWeatherConditionsSection(
+                    state = state.currentWeatherUiState.toConditionsList()
                 )
 
                 CurrentWeatherConditionsSection(
@@ -59,6 +66,7 @@ fun HomeScreen(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun HomeScreenPreview() {

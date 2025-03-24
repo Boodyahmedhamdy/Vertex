@@ -1,4 +1,4 @@
-package com.iti.vertex.ui.navigation.routes
+package com.iti.vertex.navigation.routes
 
 import androidx.annotation.StringRes
 import com.iti.vertex.R
