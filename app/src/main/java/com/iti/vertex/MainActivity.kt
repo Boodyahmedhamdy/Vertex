@@ -58,6 +58,7 @@ class MainActivity : ComponentActivity() {
     private var showDialog: MutableState<Boolean> = mutableStateOf(false)
     private var showOpenSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -242,48 +243,4 @@ class MainActivity : ComponentActivity() {
             ), LOCATION_PERMISSIONS_REQUEST_CODE
         )
     }
-
-
-    /*fun something() {
-        internal object LocationService {
-            suspend fun getCurrentLocation(context: Context): Location {
-                val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                when {
-                    !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) -> throw LocationServiceException.LocationDisabledException()
-                    !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> throw LocationServiceException.NoNetworkEnabledException()
-                    else -> {
-                        val locationProvider = LocationServices.getFusedLocationProviderClient(context)
-                        val request = CurrentLocationRequest.Builder()
-                            .setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
-                            .build()
-
-                        runCatching {
-                            val location = if (ActivityCompat.checkSelfPermission(
-                                    context,
-                                    Manifest.permission.ACCESS_FINE_LOCATION
-                                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                                    context,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
-                                ) != PackageManager.PERMISSION_GRANTED
-                            ) {
-                                throw LocationServiceException.MissingPermissionException()
-                            } else {
-                                locationProvider.getCurrentLocation(request, null).await()
-                            }
-                            return location
-                        }.getOrElse {
-                            throw LocationServiceException.UnknownException(stace = it.stackTraceToString())
-                        }
-                    }
-                }
-            }
-            sealed class LocationServiceException : Exception() {
-                class MissingPermissionException : LocationServiceException()
-                class LocationDisabledException : LocationServiceException()
-                class NoNetworkEnabledException : LocationServiceException()
-                class UnknownException(val stace: String) :LocationServiceException()
-            }
-
-        }
-    }*/
 }
