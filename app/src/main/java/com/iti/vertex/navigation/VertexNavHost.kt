@@ -39,7 +39,7 @@ fun VertexNavHost(
     NavHost(
         navController = navController,
         startDestination = Routes.HomeScreenRoute,
-        modifier = modifier.background(color = Color.Green)
+        modifier = modifier
     ) {
         composable<Routes.HomeScreenRoute> {
             val api = RetrofitHelper.apiService
@@ -51,7 +51,7 @@ fun VertexNavHost(
             val state = viewModel.state.collectAsStateWithLifecycle()
             HomeScreen(
                 state = state.value,
-                modifier = modifier.padding(8.dp).background(Color.Red),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 onRefresh = {
                     viewModel.refresh()
                 }
@@ -60,21 +60,21 @@ fun VertexNavHost(
 
         composable<Routes.FavoriteScreenRoute> {
             FavoritesScreen(
-                modifier = modifier,
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 onAddToFavoriteButtonClicked = onAddToFavoriteButtonClicked
             )
         }
 
         composable<Routes.AlarmsScreenRoute> {
-            AlarmsScreen(modifier = modifier)
+            AlarmsScreen(modifier = Modifier.fillMaxSize().padding(8.dp))
         }
 
         composable<Routes.SettingsScreenRoute> {
-            SettingsScreen(modifier = modifier)
+            SettingsScreen(modifier = Modifier.fillMaxSize().padding(8.dp))
         }
 
         composable<Routes.LocationPickerScreenRoute> {
-            LocationPickerScreen(modifier = modifier)
+            LocationPickerScreen(modifier = Modifier.fillMaxSize().padding(8.dp))
         }
     }
 
