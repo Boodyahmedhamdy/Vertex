@@ -91,8 +91,8 @@ dependencies {
     // gson
     implementation ("com.google.code.gson:gson:2.12.1")
 
-    // coil
-    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    // glide image for compose
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
 
 }

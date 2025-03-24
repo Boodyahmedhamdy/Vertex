@@ -19,6 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.iti.vertex.R
 import com.iti.vertex.data.dtos.SimpleForecastItem
 import com.iti.vertex.data.dtos.Weather
@@ -27,6 +30,7 @@ import com.iti.vertex.home.toWeatherIconUrl
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("NewApi")
 @Composable
 fun CurrentWeatherCard(
@@ -37,16 +41,16 @@ fun CurrentWeatherCard(
         modifier = modifier
     ) {
         Row(
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ){
             // image
-            AsyncImage(
+            GlideImage(
                 model = state.weather.icon.toWeatherIconUrl(),
                 contentDescription = state.weather.description,
-                placeholder = painterResource(R.drawable.baseline_downloading_24),
-                error = painterResource(R.drawable.baseline_broken_image_24),
+                loading = placeholder(painter = painterResource(R.drawable.baseline_downloading_24)),
+                failure = placeholder(painter = painterResource(R.drawable.baseline_broken_image_24)),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(150.dp)
             )
