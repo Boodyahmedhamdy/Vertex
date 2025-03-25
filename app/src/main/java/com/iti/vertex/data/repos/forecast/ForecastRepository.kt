@@ -2,11 +2,15 @@ package com.iti.vertex.data.repos.forecast
 
 import com.iti.vertex.data.dtos.FullForecastResponse
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
+import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
+import com.iti.vertex.data.sources.local.forecast.ForecastLocalDataSource
+import com.iti.vertex.data.sources.local.forecast.IForecastLocalDataSource
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource
 import com.iti.vertex.home.toWeatherIconUrl
 
 class ForecastRepository(
     private val remoteDataSource: IForecastRemoteDataSource,
+    private val localDataSource: IForecastLocalDataSource
 ) : IForecastRepository {
 
     override suspend fun getForecast(lat: Double, long: Double): FullForecastResponse {
@@ -25,6 +29,12 @@ class ForecastRepository(
         } catch (ex: Exception) {
             return CurrentWeatherResponse()
         }
+    }
+
+    fun getFavoriteForecasts() = localDataSource.getAllForecast()
+
+    suspend fun addToFavorite(forecastEntity: ForecastEntity) {
+        localDataSource.insertForecast(forecastEntity)
     }
 
     /*suspend fun getForecastFlow(

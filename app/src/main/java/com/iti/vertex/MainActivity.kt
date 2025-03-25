@@ -145,7 +145,6 @@ class MainActivity : ComponentActivity() {
 
                         (!showDialog.value) -> VertexNavHost(
                             navController = navController,
-                            onAddToFavoriteButtonClicked = {navController.navigate(Routes.LocationPickerScreenRoute)},
                             lat = lat, long = long,
                             modifier = Modifier
                                 .fillMaxSize()
