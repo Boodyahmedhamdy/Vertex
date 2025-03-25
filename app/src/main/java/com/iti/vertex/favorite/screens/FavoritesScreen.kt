@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,17 +18,22 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.favorite.FavoriteScreenUiState
-import com.iti.vertex.ui.components.PlaceholderScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun FavoritesScreen(
@@ -39,6 +43,20 @@ fun FavoritesScreen(
     onInsertFabClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val scope = rememberCoroutineScope()
+    val snackBarState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        state.notificationMessage.collect {
+            if(it.isNotBlank()) {
+                scope.launch {
+                    snackBarState.showSnackbar(
+                        message = it, duration = SnackbarDuration.Short
+                    )
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -51,7 +69,8 @@ fun FavoritesScreen(
                 else
                 Icon(imageVector = Icons.Filled.Place, contentDescription = "add location")
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackBarState) }
     ){ paddingValues ->
         if(state.isLoading) {
             Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
