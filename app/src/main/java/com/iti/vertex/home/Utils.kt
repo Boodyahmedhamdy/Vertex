@@ -26,7 +26,6 @@ fun getForecastMap(list: List<SimpleForecastItem>): Map<String, List<SimpleForec
     Log.i(TAG, "getForecastMap: ${map.keys}")
     Log.i(TAG, "getForecastMap: ${map.size}")
 
-
     return map
 }
 

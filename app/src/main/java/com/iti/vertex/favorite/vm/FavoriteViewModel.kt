@@ -27,10 +27,11 @@ class FavoriteViewModel(
     private val _favoriteScreenState: MutableStateFlow<Result<out List<ForecastEntity>>> = MutableStateFlow(Result.Loading)
     val favoriteScreenState = _favoriteScreenState.asStateFlow()
 
-    private val _state: MutableStateFlow<FavoriteScreenUiState> = MutableStateFlow(FavoriteScreenUiState(
-        notificationMessage = messageSharedFlow
-    ))
-    val state = _state.asStateFlow()
+    private val _showDeleteLocationDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showDeleteLocationDialog = _showDeleteLocationDialog.asStateFlow()
+
+    private val _selectedItemToBeDeleted = MutableStateFlow<ForecastEntity>(ForecastEntity())
+    val selectedItemToBeDeleted = _selectedItemToBeDeleted.asStateFlow()
 
     init { loadFavoriteItems() }
 
@@ -51,6 +52,7 @@ class FavoriteViewModel(
     }
 
     fun insertLocationToFavorite(lat: Double, long: Double) {
+        _favoriteScreenState.update { Result.Loading }
         viewModelScope.launch {
             try {
                 val remoteForecast = forecastRepository.getForecast(lat = lat, long = long)
@@ -77,6 +79,11 @@ class FavoriteViewModel(
         }
     }
 
+
+    fun toggleShowDeleteLocationDialog() = _showDeleteLocationDialog.update { it.not() }
+
+
+
     fun deleteForecast(entity: ForecastEntity) {
         viewModelScope.launch {
             try {
@@ -88,20 +95,8 @@ class FavoriteViewModel(
         }
     }
 
-    fun deleteForecastWithResult(entity: ForecastEntity) {
-        _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
-            val result = forecastRepository.deleteForecastWithResult(entity)
-            when(result) {
-                is Result.Error -> {
-                    _state.update { it.copy(isLoading = false) }
-                    _messageSharedFlow.emit(result.message)
-                }
-                Result.Loading -> TODO()
-                is Result.Success -> {
-                    _state.update { it.copy(isLoading = false) }
-                }
-            }
-        }
+    fun updateSelectedItemToBeDeleted(selectedItem: ForecastEntity) {
+        _selectedItemToBeDeleted.update { selectedItem }
     }
+
 }

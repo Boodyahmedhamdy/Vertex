@@ -44,7 +44,7 @@ fun FavoriteLocationListItem(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // city name
-            Text(text = state.city.name, style = MaterialTheme.typography.displaySmall)
+            Text(text = state.city.name, style = MaterialTheme.typography.titleLarge)
             // country
             Text(text = stringResource(R.string.country, state.city.country), style = MaterialTheme.typography.bodyLarge)
 

@@ -6,10 +6,17 @@ import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.forecast.IForecastLocalDataSource
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource
 
-class ForecastRepository(
+class ForecastRepository private constructor(
     private val remoteDataSource: IForecastRemoteDataSource,
     private val localDataSource: IForecastLocalDataSource
 ) : IForecastRepository {
+
+    companion object {
+        private var INSTANCE: ForecastRepository? = null
+        fun getInstance(remoteDataSource: IForecastRemoteDataSource, localDataSource: IForecastLocalDataSource): ForecastRepository {
+            return INSTANCE ?: ForecastRepository(remoteDataSource, localDataSource)
+        }
+    }
 
     override suspend fun getForecast(lat: Double, long: Double): FullForecastResponse {
         try {
@@ -45,7 +52,6 @@ class ForecastRepository(
 
     suspend fun deleteForecastWithResult(entity: ForecastEntity) =
         localDataSource.deleteForecastWithResult(entity)
-
 
 
 }

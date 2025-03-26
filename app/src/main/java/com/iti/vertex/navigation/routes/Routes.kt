@@ -20,4 +20,10 @@ import kotlinx.serialization.Serializable
 
     @Serializable
     object LocationPickerScreenRoute: Routes(R.string.location_picker)
+
+    @Serializable
+    data class ForecastDetailsScreenRoute(val lat: Double, val long: Double): Routes(R.string.forecast_details)
+
+    @Serializable
+    data object FavoriteGraph: Routes()
 }
