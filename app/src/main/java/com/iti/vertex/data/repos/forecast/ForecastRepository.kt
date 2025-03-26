@@ -3,10 +3,8 @@ package com.iti.vertex.data.repos.forecast
 import com.iti.vertex.data.dtos.FullForecastResponse
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
-import com.iti.vertex.data.sources.local.forecast.ForecastLocalDataSource
 import com.iti.vertex.data.sources.local.forecast.IForecastLocalDataSource
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource
-import com.iti.vertex.home.toWeatherIconUrl
 
 class ForecastRepository(
     private val remoteDataSource: IForecastRemoteDataSource,
@@ -37,19 +35,17 @@ class ForecastRepository(
         localDataSource.insertForecast(forecastEntity)
     }
 
-    /*suspend fun getForecastFlow(
-        lat: Double, long: Double
-    ): Flow<Result<FullForecastResponse>> = flow {
-
-        emit(Result.Loading)
-
-        try {
-            val data = remoteDataSource.getFullForecast(lat = lat, long = long)
-            emit(Result.Success(data = data))
-        } catch (ex: Exception) {
-            emit(Result.Error(ex.message))
-        }
+    override suspend fun getFavoriteForecastByLatLong(lat: Double, long: Double): ForecastEntity {
+        return localDataSource.getForecastByLatLong(lat, long)
     }
-*/
+
+    override suspend fun deleteForecast(entity: ForecastEntity) {
+        localDataSource.deleteForecast(entity)
+    }
+
+    suspend fun deleteForecastWithResult(entity: ForecastEntity) =
+        localDataSource.deleteForecastWithResult(entity)
+
+
 
 }

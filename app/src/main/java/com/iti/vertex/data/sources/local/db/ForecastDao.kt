@@ -19,4 +19,7 @@ interface ForecastDao {
     @Query("SELECT * FROM FORECASTENTITY")
     fun getAllForecast(): Flow<List<ForecastEntity>>
 
+    @Query("SELECT * FROM FORECASTENTITY WHERE lat = :lat and lon = :lon")
+    suspend fun getForecastByLatLong(lat: Double, lon: Double): ForecastEntity
+
 }

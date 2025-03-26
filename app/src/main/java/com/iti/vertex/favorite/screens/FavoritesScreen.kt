@@ -1,5 +1,8 @@
 package com.iti.vertex.favorite.screens
 
+import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,13 +15,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Card
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -32,12 +35,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
-import com.iti.vertex.favorite.FavoriteScreenUiState
+import com.iti.vertex.favorite.components.FavoriteLocationListItem
+import com.iti.vertex.utils.Result
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+
+private const val TAG = "FavoritesScreen"
 
 @Composable
 fun FavoritesScreen(
-    state: FavoriteScreenUiState,
+    uiState: Result<out List<ForecastEntity>>,
+    message: SharedFlow<String>,
     onItemClicked: (ForecastEntity) -> Unit,
     onDeleteItemClicked: (ForecastEntity) -> Unit,
     onInsertFabClicked: () -> Unit,
@@ -47,39 +55,77 @@ fun FavoritesScreen(
     val snackBarState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        state.notificationMessage.collect {
+        message.collect {
             if(it.isNotBlank()) {
-                scope.launch {
-                    snackBarState.showSnackbar(
-                        message = it, duration = SnackbarDuration.Short
-                    )
-                }
+                scope.launch { snackBarState.showSnackbar(message = it) }
             }
         }
     }
-
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onInsertFabClicked,
-            ) {
-                if(state.isLoading)
-                    CircularProgressIndicator()
-                else
+            FloatingActionButton(onClick = onInsertFabClicked,) {
                 Icon(imageVector = Icons.Filled.Place, contentDescription = "add location")
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackBarState) }
     ){ paddingValues ->
-        if(state.isLoading) {
-            Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+
+        when(uiState) {
+            Result.Loading -> {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            }
+
+            is Result.Error -> {
+                Log.i(TAG, "FavoritesScreen: error happened ${uiState.message}")
+                // what to do here
+            }
+
+            is Result.Success -> {
+                if(uiState.data.isEmpty()) {
+                    EmptyScreen(
+                        drawableRes = R.drawable.clouds,
+                        message = "No Favorite Locations yet!!",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    )
+                } else {
+                    LazyColumn(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+                        items(uiState.data) {
+                            FavoriteLocationListItem(
+                                state = it,
+                                onItemClicked = onItemClicked,
+                                onDeleteItemClicked = onDeleteItemClicked,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        /*if(uiState.isLoading) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         } else {
-            if(state.items.isEmpty()) {
+            if(uiState.items.isEmpty()) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxSize().padding(paddingValues)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.clouds),
@@ -93,37 +139,47 @@ fun FavoritesScreen(
             } else {
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize().padding(paddingValues)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
                 ) {
-                    items(state.items) {
+                    items(uiState.items) {
                         FavoriteLocationListItem(
-                            state = it,
+                            favoriteScreenState = it,
                             onItemClicked = onItemClicked,
                             onDeleteItemClicked = onDeleteItemClicked,
-                            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
                         )
                     }
 
                 }
             }
-        }
+        }*/
     }
-
-
 }
+
 
 @Composable
-fun FavoriteLocationListItem(
-    state: ForecastEntity,
-    onItemClicked: (ForecastEntity) -> Unit,
-    onDeleteItemClicked: (ForecastEntity) -> Unit,
+fun EmptyScreen(
+    @DrawableRes drawableRes: Int,
+    message: String,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        onClick = { onItemClicked(state) },
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = modifier
     ) {
-        Text(text = "Lat = ${state.city.coord.lat}", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(8.dp))
-        Text(text = "Long = ${state.city.coord.lon}", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(8.dp))
+        Image(
+            painter = painterResource(drawableRes),
+            contentDescription = null,
+            modifier = Modifier
+                .size(200.dp)
+                .padding(8.dp)
+        )
+        Text(text = message)
     }
 }
+

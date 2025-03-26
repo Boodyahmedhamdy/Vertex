@@ -3,12 +3,11 @@ package com.iti.vertex.navigation
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,6 +34,7 @@ import com.iti.vertex.navigation.routes.Routes
 import kotlinx.coroutines.Dispatchers
 
 private const val TAG = "VertexNavHost"
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VertexNavHost(
@@ -50,18 +50,16 @@ fun VertexNavHost(
         modifier = modifier
     ) {
         composable<Routes.HomeScreenRoute> {
-            val api = RetrofitHelper.apiService
-            val remoteDataSource = ForecastRemoteDataSource(api = api, ioDispatcher = Dispatchers.IO)
-            val dao = DatabaseHelper.getForecastDao(context = context)
-            val localDataSource = ForecastLocalDataSource(dao = dao)
-            val repository = ForecastRepository(
-                remoteDataSource = remoteDataSource,
-                localDataSource = localDataSource
+            val factory = HomeViewModelFactory(
+                repository = ForecastRepository(
+                    remoteDataSource = ForecastRemoteDataSource(api = RetrofitHelper.apiService, ioDispatcher = Dispatchers.IO),
+                    localDataSource = ForecastLocalDataSource(dao = DatabaseHelper.getForecastDao(context = context))
+                )
             )
-            val factory = HomeViewModelFactory(repository = repository)
             val viewModel: HomeViewModel = viewModel(factory = factory)
             viewModel.setLatLong(lat = lat, long = long)
             val state = viewModel.state.collectAsStateWithLifecycle()
+
             HomeScreen(
                 state = state.value,
                 modifier = Modifier
@@ -74,22 +72,27 @@ fun VertexNavHost(
         }
 
         composable<Routes.FavoriteScreenRoute> {
-            val api = RetrofitHelper.apiService
-            val remoteDataSource = ForecastRemoteDataSource(api = api, ioDispatcher = Dispatchers.IO)
-            val dao = DatabaseHelper.getForecastDao(context = context)
-            val localDataSource = ForecastLocalDataSource(dao = dao)
-            val repository = ForecastRepository(
-                remoteDataSource = remoteDataSource,
-                localDataSource = localDataSource
-            )
-            val factory = FavoriteViewModelFactory(forecastRepository = repository)
+            val factory = FavoriteViewModelFactory(forecastRepository = ForecastRepository(
+                remoteDataSource = ForecastRemoteDataSource(api = RetrofitHelper.apiService, ioDispatcher = Dispatchers.IO),
+                localDataSource = ForecastLocalDataSource(dao = DatabaseHelper.getForecastDao(context = context))
+            ))
             val viewModel: FavoriteViewModel = viewModel(factory = factory)
-            val state = viewModel.state.collectAsStateWithLifecycle()
+            val state = viewModel.favoriteScreenState.collectAsStateWithLifecycle()
+
             FavoritesScreen(
-                state = state.value,
-                onItemClicked = { Log.i(TAG, "VertexNavHost: clicked on ${it}") },
-                onDeleteItemClicked = {  },
+                uiState = state.value,
+                message = viewModel.messageSharedFlow,
+                onItemClicked = {
+                    Log.i(TAG, "VertexNavHost: clicked on ${it}")
+                    viewModel.getLocationByLatLong(it.city.coord.lat, it.city.coord.lon )
+                },
+                onDeleteItemClicked = {
+                    Log.i(TAG, "VertexNavHost: deleting item ${it.city.name}")
+                    viewModel.deleteForecast(it)
+                },
                 onInsertFabClicked = {
+                    /*navController.navigate(Routes.LocationPickerScreenRoute)*/
+
                     Log.i(TAG, "VertexNavHost: clicked on fab")
                     val random = generateRandomLatLng()
                     viewModel.insertLocationToFavorite(lat = random.first, long = random.second)

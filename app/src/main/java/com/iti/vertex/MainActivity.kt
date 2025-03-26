@@ -58,7 +58,6 @@ class MainActivity : ComponentActivity() {
     private var showDialog: MutableState<Boolean> = mutableStateOf(false)
     private var showOpenSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {

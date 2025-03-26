@@ -11,4 +11,6 @@
     <string name="visibility">Visibility</string>
     <string name="forecast_for_5_days">Forecast For 5 Days</string>
     <string name="feels_like">Feels Like %1$s</string>
+    <string name="country">country: %1$s</string>
+    <string name="delete_from_favorite_locations">delete %1$s from favorite locations</string>
 </resources>
