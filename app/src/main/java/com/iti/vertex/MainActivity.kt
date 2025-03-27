@@ -42,11 +42,12 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.iti.vertex.navigation.VertexNavHost
-import com.iti.vertex.navigation.routes.Routes
 import com.iti.vertex.navigation.routes.topLevelRoutes
+import com.iti.vertex.ui.components.PermissionDialog
 import com.iti.vertex.ui.theme.VertexTheme
 
 private const val TAG = "MainActivity"
@@ -65,11 +66,10 @@ class MainActivity : ComponentActivity() {
         locationManager = getSystemService(LocationManager::class.java)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
 
-
         setContent {
             var lat by remember { mutableDoubleStateOf(0.0) }
             var long by remember { mutableDoubleStateOf(0.0) }
-            val showDialogState by remember { showDialog }
+            var showDialogState by remember { showDialog }
             /**
              * check if the permissions are granted
              * if granted -> get last location and update values
@@ -89,6 +89,7 @@ class MainActivity : ComponentActivity() {
                             lat = it.latitude
                             long = it.longitude
                             showDialog.value = false
+//                            showDialogState = false
                             Log.i(TAG, "onCreate: location is lat: $lat, long:$long")
                         }
                     }
@@ -96,7 +97,6 @@ class MainActivity : ComponentActivity() {
                     showOpenSettingsDialog.value = true
                     openLocationSettings()
                 }
-
             }
 
 
@@ -131,18 +131,17 @@ class MainActivity : ComponentActivity() {
                     },
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    when {
-                        (showDialog.value) -> {
-                            PermissionDialog(
-                                onDismissRequest = { showDialog.value = false },
-                                onConfirmRequest = {
-                                    Log.i(TAG, "onCreate: request permissions clicked")
-                                    requestLocationPermissions()
-                                }
-                            )
-                        }
 
-                        (!showDialog.value) -> VertexNavHost(
+                    if(showDialogState) {
+                        PermissionDialog(
+                            onDismissRequest = { showDialog.value = false },
+                            onConfirmRequest = {
+                                Log.i(TAG, "onCreate: request permissions clicked")
+                                requestLocationPermissions()
+                            }
+                        )
+                    } else {
+                        VertexNavHost(
                             navController = navController,
                             lat = lat, long = long,
                             modifier = Modifier
@@ -153,48 +152,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
     }
 
     private fun openLocationSettings() {
         Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).also { startActivity(it) }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun PermissionDialog(
-        modifier: Modifier = Modifier,
-        onDismissRequest: () -> Unit,
-        onConfirmRequest: () -> Unit
-    ) {
-        BasicAlertDialog(
-            onDismissRequest = onDismissRequest /*{ showDialog.value = false }*/,
-            modifier = modifier
-        ) {
-            Card {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(text = "Important Note", style = MaterialTheme.typography.titleLarge)
 
-                    Text(text = "Vertex needs location permissions to work correctly")
-
-                    Row {
-                        TextButton (
-                            onClick = onDismissRequest
-                        ) { Text(text = "Dismiss") }
-
-                        TextButton(
-                            onClick = onConfirmRequest
-                        ) { Text(text = "Allow Permissions") }
-                    }
-
-                }
-            }
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

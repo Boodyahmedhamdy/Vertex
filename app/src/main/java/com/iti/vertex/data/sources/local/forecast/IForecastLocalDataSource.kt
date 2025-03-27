@@ -9,5 +9,4 @@ interface IForecastLocalDataSource {
     fun getAllForecast(): Flow<List<ForecastEntity>>
     suspend fun getForecastByLatLong(lat: Double, long: Double): ForecastEntity
     suspend fun deleteForecast(entity: ForecastEntity)
-    suspend fun deleteForecastWithResult(entity: ForecastEntity): Result<out Unit>
 }

@@ -25,7 +25,6 @@ class ForecastDetailsViewModel(
             } catch (ex: Exception) {
                 _state.update { Result.Error(ex.message ?: "Error loading the Forecast") }
             }
-
         }
     }
 

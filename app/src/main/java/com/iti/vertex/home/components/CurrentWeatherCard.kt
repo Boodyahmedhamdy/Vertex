@@ -66,11 +66,16 @@ fun CurrentWeatherCard(
             ) {
 
                 // description
-                Text(text = state.weather.description, modifier = Modifier.padding(8.dp), fontWeight = FontWeight.Bold)
+                Text(
+                    text = state.weather.description,
+                    modifier = Modifier.padding(8.dp),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
+                )
 
                 // temperature
                 Text(
-                    text = "${state.mainData.temp}",
+                    text = "${state.mainData.temp.toInt()}",
                     style = MaterialTheme.typography.displayLarge,
                     fontWeight = FontWeight.Bold
                 )

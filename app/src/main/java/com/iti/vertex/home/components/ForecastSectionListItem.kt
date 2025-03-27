@@ -41,10 +41,10 @@ fun ForecastSectionListItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
             // date and time
-            Text(text = state.dtTxt, modifier = Modifier.alpha(0.8f).padding(8.dp))
+            Text(text = state.dtTxt.split(" ").last(), modifier = Modifier.alpha(0.8f).padding(8.dp))
 
             // image
             GlideImage(
@@ -57,13 +57,13 @@ fun ForecastSectionListItem(
 
             Text(
                 text = state.weather.first().description,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
 
             // temperature
             Text(
-                text = "${state.mainData.temp}",
+                text = "${state.mainData.temp.toInt()}",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.displaySmall,
                 modifier = Modifier.padding(4.dp)

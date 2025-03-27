@@ -50,8 +50,4 @@ class ForecastRepository private constructor(
         localDataSource.deleteForecast(entity)
     }
 
-    suspend fun deleteForecastWithResult(entity: ForecastEntity) =
-        localDataSource.deleteForecastWithResult(entity)
-
-
 }
