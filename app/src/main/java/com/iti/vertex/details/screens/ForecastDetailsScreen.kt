@@ -48,7 +48,7 @@ fun ForecastDetailsScreen(
         is Result.Success -> {
             ForecastDetailsScreenContent(
                 state = uiState.data,
-                modifier = modifier
+                modifier = modifier.verticalScroll(rememberScrollState())
             )
         }
     }
@@ -60,7 +60,7 @@ fun ForecastDetailsScreenContent(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState())) {
+        modifier = modifier) {
         // title of the location
         Text(
             text = state.city.name,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
@@ -18,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -68,9 +70,10 @@ fun CurrentWeatherCard(
                 // description
                 Text(
                     text = state.weather.description,
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center
                 )
 
                 // temperature
@@ -81,7 +84,7 @@ fun CurrentWeatherCard(
                 )
 
                 // feels like
-                Text(text = stringResource(R.string.feels_like, state.mainData.feelsLike), fontWeight = FontWeight.Thin)
+                Text(text = stringResource(R.string.feels_like, state.mainData.feelsLike.toInt()), fontWeight = FontWeight.Thin)
 
                 // city name
                 Text(text = state.name, modifier = Modifier.padding(8.dp))
