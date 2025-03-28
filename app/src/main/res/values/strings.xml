@@ -20,4 +20,13 @@
     <string name="kelvin">Kelvin</string>
     <string name="fahrenheit">Fahrenheit</string>
     <string name="celisuis">Celisuis</string>
+    <string name="map">Map</string>
+    <string name="gps">GPS</string>
+    <string name="arabic">Arabic</string>
+    <string name="english">English</string>
+    <string name="device_default">Device Default</string>
+    <string name="location_provider">Location Provider</string>
+    <string name="temperature_unit">Temperature Unit</string>
+    <string name="language">Language</string>
+    <string name="wind_speed_unit">Wind Speed Unit</string>
 </resources>
