@@ -123,7 +123,7 @@ fun VertexNavHost(
         composable<Routes.SettingsScreenRoute> {
             val helper = DataStoreHelper(context)
             val dataSource = SettingsLocalDataSource(dataStoreHelper = helper)
-            val repo = SettingsRepository(localDataSource = dataSource)
+            val repo = SettingsRepository.getInstance(settingsLocalDataSource = dataSource)
             val factory = SettingsViewModelFactory(repository = repo)
             val viewModel: SettingsViewModel = viewModel(factory = factory)
 

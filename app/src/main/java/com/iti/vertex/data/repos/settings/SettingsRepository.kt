@@ -12,9 +12,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 private const val TAG = "SettingsRepository"
-class SettingsRepository(
+class SettingsRepository private constructor(
     private val localDataSource: ISettingsLocalDataSource
 ) : ISettingsRepository {
+
+    companion object {
+        private var INSTANCE: SettingsRepository? = null
+        fun getInstance(settingsLocalDataSource: ISettingsLocalDataSource): SettingsRepository {
+            return INSTANCE ?: SettingsRepository(settingsLocalDataSource)
+        }
+    }
 
     override fun getCurrentWindSpeedUnit() = localDataSource.getCurrentWindSpeed()
         .map { WindSpeedUnit.valueOf(it) }.flowOn(Dispatchers.IO)
