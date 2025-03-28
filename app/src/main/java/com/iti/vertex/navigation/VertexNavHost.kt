@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,9 +24,12 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.iti.vertex.alarms.screens.AlarmsScreen
 import com.iti.vertex.data.repos.forecast.ForecastRepository
+import com.iti.vertex.data.repos.settings.SettingsRepository
 import com.iti.vertex.data.sources.local.db.DatabaseHelper
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.forecast.ForecastLocalDataSource
+import com.iti.vertex.data.sources.local.settings.DataStoreHelper
+import com.iti.vertex.data.sources.local.settings.SettingsLocalDataSource
 import com.iti.vertex.data.sources.remote.api.RetrofitHelper
 import com.iti.vertex.data.sources.remote.forecast.ForecastRemoteDataSource
 import com.iti.vertex.details.screens.ForecastDetailsScreen
@@ -41,6 +45,8 @@ import com.iti.vertex.home.vm.HomeViewModelFactory
 import com.iti.vertex.locationpicker.screens.LocationPickerScreen
 import com.iti.vertex.settings.screens.SettingsScreen
 import com.iti.vertex.navigation.routes.Routes
+import com.iti.vertex.settings.vm.SettingsViewModel
+import com.iti.vertex.settings.vm.SettingsViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Route
 
@@ -115,9 +121,16 @@ fun VertexNavHost(
         }
 
         composable<Routes.SettingsScreenRoute> {
-            SettingsScreen(modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp))
+            val helper = DataStoreHelper(context)
+            val dataSource = SettingsLocalDataSource(dataStoreHelper = helper)
+            val repo = SettingsRepository(localDataSource = dataSource)
+            val factory = SettingsViewModelFactory(repository = repo)
+            val viewModel: SettingsViewModel = viewModel(factory = factory)
+
+            SettingsScreen(
+                viewModel = viewModel,
+                modifier = Modifier.fillMaxSize().padding(8.dp)
+            )
         }
 
         composable<Routes.LocationPickerScreenRoute> {

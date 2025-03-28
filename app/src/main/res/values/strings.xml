@@ -14,4 +14,10 @@
     <string name="country">country: %1$s</string>
     <string name="delete_from_favorite_locations">delete %1$s from favorite locations</string>
     <string name="forecast_details">Forecast Details</string>
+    <string name="meter_per_second">Meter/Second</string>
+    <string name="mile_per_hour">Mile/Hour</string>
+    <string name="wind_speed_unit_title">Wind Speed Unit</string>
+    <string name="kelvin">Kelvin</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="celisuis">Celisuis</string>
 </resources>
