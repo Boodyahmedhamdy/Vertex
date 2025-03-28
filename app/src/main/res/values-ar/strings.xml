@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vertex</string>
+    <string name="home">الرئيسية</string>
+    <string name="favorites">المفضلة</string>
+    <string name="alarms">المنبهات</string>
+    <string name="settings">الاعدادات</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="clouds">الغيوم</string>
+    <string name="pressure">الضغط</string>
+    <string name="visibility">الرؤية</string>
+    <string name="forecast_for_5_days">توقعات لخمس ايام</string>
+    <string name="meter_per_second">متر/ثانية</string>
+    <string name="mile_per_hour">ميل/الساعة</string>
+    <string name="wind_speed_unit_title">وحدة قياس سرعة الرياح</string>
+    <string name="kelvin">كلفن</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="celisuis">سلسزيوس</string>
+    <string name="map">الخريطة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الانجليزية</string>
+    <string name="device_default">لغة الجهاز)الانجليزية(</string>
+    <string name="location_provider">مصدر الموقع</string>
+    <string name="temperature_unit">وحدة قياس درجة الحرارة</string>
+    <string name="language">اللغة</string>
+    <string name="wind_speed_unit">وحدة قياس سرعة الرياح</string>
+</resources>

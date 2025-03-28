@@ -3,14 +3,18 @@ package com.iti.vertex.data.sources.local.settings
 import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.iti.vertex.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlin.math.log
 
 private const val TAG = "DataStoreHelper"
@@ -50,7 +54,10 @@ class DataStoreHelper(private val context: Context) {
     suspend fun setCurrentLanguage(language: Language) {
         context.dataStore.edit { settings ->
             settings[languageKey] = language.name
-            Log.i(TAG, "setCurrentLanguage: by $language")
+            withContext(Dispatchers.Main) {
+                val appLocale = LocaleListCompat.forLanguageTags(language.localeCode)
+                AppCompatDelegate.setApplicationLocales(appLocale)
+            }
         }
     }
     fun getCurrentLanguage(): Flow<String> = context.dataStore.data.map { settings ->
@@ -81,11 +88,12 @@ enum class LocationProvider(
  * @property DEVICE_DEFAULT is the default and depends on device language
  * */
 enum class Language(
-    @StringRes val displayName: Int = R.string.settings
+    @StringRes val displayName: Int = R.string.settings,
+    val localeCode: String = "en-US"
 ) {
-    ARABIC(R.string.arabic),
-    ENGLISH(R.string.english),
-    DEVICE_DEFAULT(R.string.device_default)
+    ARABIC(R.string.arabic, localeCode = "ar"),
+    ENGLISH(R.string.english, localeCode = "en"),
+    DEVICE_DEFAULT(R.string.device_default, localeCode = "en-US")
 }
 
 /**

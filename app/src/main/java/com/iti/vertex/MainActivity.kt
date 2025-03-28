@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,7 +54,7 @@ import com.iti.vertex.ui.theme.VertexTheme
 private const val TAG = "MainActivity"
 const val LOCATION_PERMISSIONS_REQUEST_CODE = 12
 
-class MainActivity : ComponentActivity() {
+class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private var showDialog: MutableState<Boolean> = mutableStateOf(false)
