@@ -1,5 +1,6 @@
 package com.iti.vertex.settings.screens
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -20,16 +21,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.settings.Language
 import com.iti.vertex.data.sources.local.settings.LocationProvider
 import com.iti.vertex.data.sources.local.settings.TempUnit
 import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
+import com.iti.vertex.navigation.routes.Routes
 import com.iti.vertex.settings.vm.SettingsViewModel
+
+private const val TAG = "SettingsScreen"
 
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
+    navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
 
@@ -46,7 +52,15 @@ fun SettingsScreen(
         tempUnitState = tempUnitState.value,
         onTempUnitChanged = { viewModel.setTempUnit(it) },
         locationProviderState = locationProviderState.value,
-        onLocationProviderChanged = { viewModel.setLocationProvider(it) },
+        onLocationProviderChanged = {
+            viewModel.setLocationProvider(it)
+            when(it) {
+                LocationProvider.GPS -> {
+                    Log.i(TAG, "SettingsScreen: gps selected")
+                }
+                LocationProvider.MAP -> navController.navigate(Routes.LocationPickerScreenRoute)
+            }
+        },
         modifier = modifier.verticalScroll(rememberScrollState()),
     )
 
@@ -71,7 +85,9 @@ fun SettingsScreenContent(
     ){
 
         // wind speed card
-        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)) {
             // title
             Text(
                 text = stringResource(R.string.wind_speed_unit),
@@ -97,7 +113,9 @@ fun SettingsScreenContent(
         }
 
         // language
-        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)) {
             // title
             Text(
                 text = stringResource(R.string.language),
@@ -123,7 +141,9 @@ fun SettingsScreenContent(
         }
 
         // temperature unit card
-        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)) {
             // title
             Text(
                 text = stringResource(R.string.temperature_unit),
@@ -149,7 +169,9 @@ fun SettingsScreenContent(
         }
 
         // location provider
-        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)) {
             // title
             Text(
                 text = stringResource(R.string.location_provider),

@@ -10,95 +10,117 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.iti.vertex.data.dtos.FullForecastResponse
-import com.iti.vertex.data.dtos.MainData
-import com.iti.vertex.data.dtos.SimpleForecastItem
-import com.iti.vertex.data.dtos.Weather
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.details.screens.ForecastDetailsScreenContent
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
 import com.iti.vertex.home.components.CurrentWeatherSection
-import com.iti.vertex.home.states.HomeScreenUiState
-import com.iti.vertex.ui.theme.VertexTheme
+import com.iti.vertex.home.states.ForecastUiState
+import com.iti.vertex.home.vm.HomeViewModel
+import com.iti.vertex.utils.Result
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    state: HomeScreenUiState,
-    onRefresh: () -> Unit,
+    viewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ) {
+    val currentWeatherState = viewModel.currentWeatherState.collectAsStateWithLifecycle()
+    val forecastState = viewModel.forecastState.collectAsStateWithLifecycle()
+    val isRefreshingState = viewModel.isRefreshing.collectAsStateWithLifecycle()
 
-    PullToRefreshBox(
-        isRefreshing = state.isRefreshing,
-        onRefresh = { onRefresh() },
-        modifier = modifier
-    ) {
-        if(state.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 8.dp)
-                    .fillMaxSize()
-            ) {
-                CurrentWeatherSection(
-                    state = state.currentWeatherUiState,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
 
-                CurrentWeatherConditionsSection(
-                    state = state.currentWeatherUiState.toConditionsList()
-                )
+    LaunchedEffect(Unit) {
+        viewModel.messageSharedFlow.collect {
+            scope.launch { snackBarHostState.showSnackbar(message = context.getString(it)) }
+        }
+    }
 
-                //////////////////////////////
-
-                ForecastDetailsScreenContent(
-                    state = state.forecastUiState.toEntity()
-                )
-
-            }
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+    ) { paddingValues ->
+        PullToRefreshBox(
+            isRefreshing = isRefreshingState.value,
+            onRefresh = { viewModel.refresh() },
+            modifier = modifier.padding(paddingValues)
+        ) {
+            HomeScreenContent(
+                currentWeatherState = currentWeatherState.value,
+                forecastState = forecastState.value,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview(showSystemUi = true, showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
-    VertexTheme {
-        HomeScreen(
-            state = HomeScreenUiState(
-                forecastUiState = FullForecastResponse(
-                    list = listOf(
-                        SimpleForecastItem(
-                            mainData = MainData(
-                                temp = 24.0
-                            ),
-                            weather = listOf(
-                                Weather(
-                                    main = "Sunny"
-                                )
-                            ),
-                            dtTxt = "2025-03-21 15:00:00"
-                        ),
-                    ),
+fun HomeScreenContent(
+    currentWeatherState: Result<out CurrentWeatherResponse>,
+    forecastState: Result<out ForecastUiState>,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState())
+    ) {
+        // current weather section
+        when(currentWeatherState) {
+            Result.Loading -> {
+                Box(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is Result.Error -> {
+                Text(text = currentWeatherState.message, color = MaterialTheme.colorScheme.error)
+            }
+            is Result.Success -> {
+                CurrentWeatherSection(
+                    state = currentWeatherState.data.toCurrentWeatherUiState(),
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
 
-                    ).toUiState()
-            ),
-            onRefresh = {  },
-            modifier = Modifier.fillMaxSize()
-        )
+                CurrentWeatherConditionsSection(
+                    state = currentWeatherState.data.toCurrentWeatherUiState().toConditionsList()
+                )
+            }
+        }
+
+        // forecast section
+        when(forecastState) {
+            Result.Loading -> {
+                Box(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is Result.Error -> {
+                Text(text = forecastState.message, color = MaterialTheme.colorScheme.error)
+            }
+            is Result.Success -> {
+                ForecastDetailsScreenContent(
+                    state = forecastState.data.toEntity()
+                )
+            }
+        }
     }
-
 }
+

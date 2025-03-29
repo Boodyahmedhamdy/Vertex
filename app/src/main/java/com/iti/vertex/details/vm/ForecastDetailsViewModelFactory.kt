@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.iti.vertex.data.repos.forecast.ForecastRepository
 
+@Suppress("UNCHECKED_CAST")
 class ForecastDetailsViewModelFactory(
     private val repository: ForecastRepository
 ): ViewModelProvider.Factory {

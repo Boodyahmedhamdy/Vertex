@@ -29,4 +29,6 @@
     <string name="temperature_unit">Temperature Unit</string>
     <string name="language">Language</string>
     <string name="wind_speed_unit">Wind Speed Unit</string>
+    <string name="error_while_getting_forecast">Error while Getting Forecast</string>
+    <string name="loaded_forecast_successfully">Loaded Forecast Successfully</string>
 </resources>

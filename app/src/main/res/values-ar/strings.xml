@@ -24,4 +24,6 @@
     <string name="temperature_unit">وحدة قياس درجة الحرارة</string>
     <string name="language">اللغة</string>
     <string name="wind_speed_unit">وحدة قياس سرعة الرياح</string>
+    <string name="error_while_getting_forecast">خطا في تحميل التوقعات</string>
+    <string name="loaded_forecast_successfully">تم تحميل التوقعات بنجاح</string>
 </resources>

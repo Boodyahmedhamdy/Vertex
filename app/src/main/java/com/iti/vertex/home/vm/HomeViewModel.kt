@@ -3,17 +3,19 @@ package com.iti.vertex.home.vm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iti.vertex.R
+import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.repos.forecast.IForecastRepository
-import com.iti.vertex.home.getForecastMap
-import com.iti.vertex.home.states.CurrentWeatherUiState
+import com.iti.vertex.home.states.ForecastUiState
 import com.iti.vertex.home.states.HomeScreenUiState
-import kotlinx.coroutines.Dispatchers
+import com.iti.vertex.utils.Result
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "HomeViewModel"
 
@@ -24,60 +26,56 @@ class HomeViewModel(
     private val _state: MutableStateFlow<HomeScreenUiState> = MutableStateFlow(HomeScreenUiState())
     val state = _state.asStateFlow()
 
-    init {
-        loadForecast()
-        loadCurrentWeather()
-    }
+    private val _currentWeatherState: MutableStateFlow<Result<out CurrentWeatherResponse>> = MutableStateFlow(Result.Loading)
+    val currentWeatherState = _currentWeatherState.asStateFlow()
 
+    private val _forecastState: MutableStateFlow<Result<out ForecastUiState>> = MutableStateFlow(Result.Loading)
+    val forecastState = _forecastState.asStateFlow()
 
-    fun loadForecast() {
+    private val _messageSharedFlow = MutableSharedFlow<Int>()
+    val messageSharedFlow = _messageSharedFlow.asSharedFlow()
 
-        Log.i(TAG, "loadForecast: called")
+    private val _isRefreshing = MutableStateFlow<Boolean>(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
+    private fun loadForecast() {
         viewModelScope.launch {
-            updateIsLoading(true)
-            val data = repository.getForecast(
-                lat = _state.value.lat,
-                long = _state.value.long
-            ).toUiState()
-            withContext(Dispatchers.IO) {
-                _state.update {
-                    it.copy(
-                        forecastUiState = data,
-                        forecastMap = getForecastMap(data.list)
-                    )
-                }
-            updateIsLoading(false)
+            try {
+                val data = repository.getForecast(
+                    lat = _state.value.lat,
+                    long = _state.value.long
+                ).toUiState()
+                _forecastState.update { Result.Success(data) }
+                _messageSharedFlow.emit(R.string.loaded_forecast_successfully)
+            } catch (ex: Exception) {
+                _forecastState.update { Result.Error(ex.message ?: "Error while getting forecast") }
+                _messageSharedFlow.emit(R.string.error_while_getting_forecast)
             }
-            Log.i(TAG, "loadForecast: data: ${data}")
         }
     }
 
-    fun loadCurrentWeather() {
+    private fun loadCurrentWeather() {
         viewModelScope.launch {
-            updateIsLoading(true)
-            val data = repository.getCurrentWeather(lat = 30.0444, long = 31.2357)
-            updateCurrentWeatherState(data.toCurrentWeatherUiState())
-            updateIsLoading(false)
+            try {
+                val data = repository.getCurrentWeather(lat = _state.value.lat, long = _state.value.long)
+                _currentWeatherState.update { Result.Success(data) }
+            } catch (ex: Exception) {
+                _currentWeatherState.update { Result.Error(ex.message ?: "Error while getting current weather") }
+            }
         }
-    }
-
-    private fun updateCurrentWeatherState(currentWeatherUiState: CurrentWeatherUiState) = _state.update {
-        it.copy(currentWeatherUiState = currentWeatherUiState)
-    }
-
-    private fun updateIsLoading(isLoading: Boolean) = _state.update {
-        it.copy(isLoading = isLoading)
-    }
-
-    private fun updateIsRefreshing(isRefreshing: Boolean) = _state.update {
-        it.copy(isRefreshing = isRefreshing)
     }
 
     fun refresh() {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true, isLoading = true) }
+            _isRefreshing.update { true }
             delay(1000)
-            _state.update { it.copy(isRefreshing = false, isLoading = false) }
+            try {
+                loadForecast()
+                loadCurrentWeather()
+            } catch (ex: Exception) {
+                _messageSharedFlow.emit(R.string.error_while_getting_forecast)
+            }
+            _isRefreshing.update { false }
         }
     }
 
@@ -87,6 +85,11 @@ class HomeViewModel(
                 lat = lat, long = long
             )
         }
+    }
+
+    fun load() {
+        loadCurrentWeather()
+        loadForecast()
     }
 
 

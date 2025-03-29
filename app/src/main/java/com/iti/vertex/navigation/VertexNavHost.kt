@@ -74,16 +74,11 @@ fun VertexNavHost(
             )
             val viewModel: HomeViewModel = viewModel(factory = factory)
             viewModel.setLatLong(lat = lat, long = long)
-            val state = viewModel.state.collectAsStateWithLifecycle()
+            viewModel.load()
 
             HomeScreen(
-                state = state.value,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                onRefresh = {
-                    viewModel.refresh()
-                }
+                viewModel = viewModel,
+                modifier = Modifier.fillMaxSize().padding(8.dp),
             )
         }
 
@@ -121,14 +116,17 @@ fun VertexNavHost(
         }
 
         composable<Routes.SettingsScreenRoute> {
-            val helper = DataStoreHelper(context)
-            val dataSource = SettingsLocalDataSource(dataStoreHelper = helper)
-            val repo = SettingsRepository.getInstance(settingsLocalDataSource = dataSource)
-            val factory = SettingsViewModelFactory(repository = repo)
-            val viewModel: SettingsViewModel = viewModel(factory = factory)
 
+            val viewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModelFactory(
+                    repository = SettingsRepository.getInstance(
+                        settingsLocalDataSource = SettingsLocalDataSource(dataStoreHelper = DataStoreHelper(context))
+                    )
+                )
+            )
             SettingsScreen(
                 viewModel = viewModel,
+                navController = navController,
                 modifier = Modifier.fillMaxSize().padding(8.dp)
             )
         }

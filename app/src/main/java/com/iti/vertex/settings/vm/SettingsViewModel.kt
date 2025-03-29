@@ -72,6 +72,10 @@ class SettingsViewModel(
         viewModelScope.launch {
             repository.getCurrentLocationProvider().collect {newProvider ->
                 _locationProviderState.update { newProvider }
+                when(newProvider) {
+                    LocationProvider.GPS -> TODO()
+                    LocationProvider.MAP -> TODO()
+                }
             }
         }
     }
