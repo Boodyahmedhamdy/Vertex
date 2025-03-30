@@ -97,11 +97,10 @@ fun VertexNavHost(
 
         composable<Routes.ForecastDetailsScreenRoute> {
             val route = it.toRoute<Routes.ForecastDetailsScreenRoute>()
-            val factory = ForecastDetailsViewModelFactory(repository = ForecastRepository.getInstance(
+            val viewModel: ForecastDetailsViewModel = viewModel(factory = ForecastDetailsViewModelFactory(repository = ForecastRepository.getInstance(
                 remoteDataSource = ForecastRemoteDataSource(api = RetrofitHelper.apiService, ioDispatcher = Dispatchers.IO),
                 localDataSource = ForecastLocalDataSource(dao = DatabaseHelper.getForecastDao(context = context))
-            ))
-            val viewModel: ForecastDetailsViewModel = viewModel(factory = factory)
+            ), settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(context)))))
             viewModel.load(lat = route.lat, long = route.long)
             ForecastDetailsScreen(
                 viewModel = viewModel,

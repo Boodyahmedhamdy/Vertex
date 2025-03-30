@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,8 +30,24 @@ fun ForecastDetailsScreen(
     viewModel: ForecastDetailsViewModel,
     modifier: Modifier = Modifier
 ) {
-    val uiState = viewModel.state.collectAsStateWithLifecycle().value
+    val uiState = viewModel.state.collectAsStateWithLifecycle()
 
+    ForecastDetailsScreenContent(
+        uiState = uiState.value,
+        onSetCurrentLocationClicked = { lat, long ->
+            viewModel.setCurrentLocation(lat, long)
+        },
+        modifier = modifier
+    )
+
+}
+
+@Composable
+fun ForecastDetailsScreenContent(
+    uiState: Result<out ForecastEntity>,
+    onSetCurrentLocationClicked: (lat: Double, long: Double) -> Unit,
+    modifier: Modifier = Modifier
+) {
     when(uiState) {
         is Result.Error -> {
             EmptyScreen(
@@ -38,27 +55,32 @@ fun ForecastDetailsScreen(
                 message = uiState.message,
                 modifier = modifier
             )
-
         }
         Result.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         }
         is Result.Success -> {
-            ForecastDetailsScreenContent(
-                state = uiState.data,
-                modifier = modifier.verticalScroll(rememberScrollState())
-            )
+            Column {
+                OutlinedButton( onClick = { onSetCurrentLocationClicked(uiState.data.city.coord.lat, uiState.data.city.coord.lon) } ) {
+                    Text(text = stringResource(R.string.set_as_current_location))
+                }
+
+                ForecastSection(
+                    state = uiState.data,
+                    modifier = modifier.verticalScroll(rememberScrollState())
+                )
+            }
         }
     }
 }
 
+
 @Composable
-fun ForecastDetailsScreenContent(
+fun ForecastSection(
     state: ForecastEntity,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier) {
+    Column(modifier = modifier) {
         // title of the locationState
         Text(
             text = state.city.name,

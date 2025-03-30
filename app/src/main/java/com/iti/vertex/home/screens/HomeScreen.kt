@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
-import com.iti.vertex.details.screens.ForecastDetailsScreenContent
+import com.iti.vertex.details.screens.ForecastSection
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
 import com.iti.vertex.home.components.CurrentWeatherSection
 import com.iti.vertex.home.states.ForecastUiState
@@ -116,7 +116,7 @@ fun HomeScreenContent(
                 Text(text = forecastState.message, color = MaterialTheme.colorScheme.error)
             }
             is Result.Success -> {
-                ForecastDetailsScreenContent(
+                ForecastSection(
                     state = forecastState.data.toEntity()
                 )
             }

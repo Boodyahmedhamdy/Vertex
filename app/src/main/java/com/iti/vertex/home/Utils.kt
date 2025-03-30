@@ -8,10 +8,7 @@ import java.util.Locale
 
 private const val TAG = "Utils"
 fun String.toWeatherIconUrl(): String {
-    Log.i(TAG, "toWeatherIconUrl: ${this}")
-    val result = "https://openweathermap.org/img/wn/$this@2x.png"
-    Log.i(TAG, "toWeatherIconUrl: result: $result")
-    return result
+    return "https://openweathermap.org/img/wn/$this@2x.png"
 }
 
 fun getForecastMap(list: List<SimpleForecastItem>): Map<String, List<SimpleForecastItem>> {
