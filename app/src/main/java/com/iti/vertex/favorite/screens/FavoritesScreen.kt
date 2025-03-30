@@ -71,8 +71,9 @@ fun FavoritesScreen(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                val random = generateRandomLatLng()
-                viewModel.insertLocationToFavorite(lat = random.first, long = random.second)
+                /*val random = generateRandomLatLng()
+                viewModel.insertLocationToFavorite(lat = random.first, long = random.second)*/
+                navController.navigate(Routes.LocationPickerScreenRoute)
             },) {
                 Icon(imageVector = Icons.Filled.Place, contentDescription = "add locationState")
             }

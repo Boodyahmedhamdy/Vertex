@@ -22,6 +22,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.google.android.libraries.places.api.Places
+import com.iti.vertex.BuildConfig
 import com.iti.vertex.alarms.screens.AlarmsScreen
 import com.iti.vertex.data.repos.forecast.ForecastRepository
 import com.iti.vertex.data.repos.settings.SettingsRepository
@@ -43,6 +45,8 @@ import com.iti.vertex.home.screens.HomeScreen
 import com.iti.vertex.home.vm.HomeViewModel
 import com.iti.vertex.home.vm.HomeViewModelFactory
 import com.iti.vertex.locationpicker.screens.LocationPickerScreen
+import com.iti.vertex.locationpicker.vm.LocationPickerViewModel
+import com.iti.vertex.locationpicker.vm.LocationPickerViewModelFactory
 import com.iti.vertex.settings.screens.SettingsScreen
 import com.iti.vertex.navigation.routes.Routes
 import com.iti.vertex.settings.vm.SettingsViewModel
@@ -60,6 +64,8 @@ fun VertexNavHost(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+
+
     NavHost(
         navController = navController,
         startDestination = Routes.HomeScreenRoute,
@@ -130,10 +136,24 @@ fun VertexNavHost(
             )
         }
 
+        Places.initializeWithNewPlacesApiEnabled(context.applicationContext, BuildConfig.MAPS_API_KEY)
+
+
         composable<Routes.LocationPickerScreenRoute> {
-            LocationPickerScreen(modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp))
+            val viewModel: LocationPickerViewModel = viewModel(
+                factory = LocationPickerViewModelFactory(
+                    forecastRepository = ForecastRepository.getInstance(
+                        remoteDataSource = ForecastRemoteDataSource(RetrofitHelper.apiService, Dispatchers.IO),
+                        localDataSource = ForecastLocalDataSource(DatabaseHelper.getForecastDao(context))
+                    ),
+                    settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(context))),
+                )
+            )
+            LocationPickerScreen(
+                viewModel = viewModel,
+                navController = navController,
+                modifier = Modifier.fillMaxSize().padding(8.dp)
+            )
         }
     }
 

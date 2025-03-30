@@ -33,4 +33,7 @@
     <string name="loaded_forecast_successfully">Loaded Forecast Successfully</string>
     <string name="current_location_is_latitude_longitude">Current location is latitude: %1$s longitude: %2$s</string>
     <string name="set_as_current_location">set as current location</string>
+    <string name="search_location">search location</string>
+    <string name="search_for_location">Search for Location....</string>
+    <string name="search_for_places">Search for Places</string>
 </resources>

@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.play.services.location)
     implementation(libs.androidx.appcompat)
+    implementation(libs.places)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -121,6 +122,12 @@ dependencies {
 
     // maps compose
     implementation ("com.google.maps.android:maps-compose:6.5.2")
+
+    // auto complete
+    implementation("com.google.maps.android:places-compose:0.1.3")
+
+    // splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
 
 }
