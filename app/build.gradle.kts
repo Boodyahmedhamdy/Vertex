@@ -7,6 +7,16 @@ plugins {
     // Kotlin serialization plugin for type safe routes and navigation arguments
     kotlin("plugin.serialization") version "2.0.21"
     id("com.google.devtools.ksp")
+
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 android {
@@ -104,6 +114,13 @@ dependencies {
 
     // data store
     implementation("androidx.datastore:datastore-preferences:1.1.4")
+
+
+    // Maps SDK for Android
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+
+    // maps compose
+    implementation ("com.google.maps.android:maps-compose:6.5.2")
 
 
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,10 +20,8 @@ import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.details.vm.ForecastDetailsViewModel
 import com.iti.vertex.favorite.screens.EmptyScreen
-import com.iti.vertex.home.components.ForecastSection
 import com.iti.vertex.home.components.ForecastSectionDay
 import com.iti.vertex.home.getForecastMap
-import com.iti.vertex.navigation.routes.Routes
 import com.iti.vertex.utils.Result
 
 @Composable
@@ -41,6 +38,7 @@ fun ForecastDetailsScreen(
                 message = uiState.message,
                 modifier = modifier
             )
+
         }
         Result.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
