@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.settings.Language
 import com.iti.vertex.data.sources.local.settings.LocationProvider
+import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.data.sources.local.settings.TempUnit
 import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.navigation.routes.Routes
@@ -43,6 +44,8 @@ fun SettingsScreen(
     val languageState = viewModel.languageState.collectAsStateWithLifecycle()
     val tempUnitState = viewModel.tempUnitState.collectAsStateWithLifecycle()
     val locationProviderState = viewModel.locationProviderState.collectAsStateWithLifecycle()
+    val locationState = viewModel.locationState.collectAsStateWithLifecycle()
+
 
     SettingsScreenContent(
         windSpeedUnitState = windSpeedState.value,
@@ -61,6 +64,7 @@ fun SettingsScreen(
                 LocationProvider.MAP -> navController.navigate(Routes.LocationPickerScreenRoute)
             }
         },
+        locationState = locationState.value,
         modifier = modifier.verticalScroll(rememberScrollState()),
     )
 
@@ -78,6 +82,7 @@ fun SettingsScreenContent(
     onTempUnitChanged: (TempUnit) -> Unit,
     locationProviderState: LocationProvider,
     onLocationProviderChanged: (LocationProvider) -> Unit,
+    locationState: MyLocation,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -168,7 +173,7 @@ fun SettingsScreenContent(
             }
         }
 
-        // location provider
+        // locationState provider
         Card(modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)) {
@@ -196,11 +201,30 @@ fun SettingsScreenContent(
             }
         }
 
+        Text(text = stringResource(
+            R.string.current_location_is_latitude_longitude,
+            locationState.lat,
+            locationState.long
+        ), modifier = Modifier.fillMaxWidth().padding(8.dp))
+
     }
 }
 
+/*
 @Preview
 @Composable
 private fun SettingsScreenPreview() {
-
-}
+    if(!locationPemissionsGranted()) { // not granted
+        showLocationPermissionsNeededDialog(
+            onConfirm = { requestLocationPermissions() },
+            onCancel = { finish() }
+        )
+    } else { // permissions granted
+        if(!locationIsEnabled) {
+            openLocationSettings()
+        } else {
+            val location = getCurrentLocation()
+            setCurrentLocation(location)
+        }
+    }
+}*/

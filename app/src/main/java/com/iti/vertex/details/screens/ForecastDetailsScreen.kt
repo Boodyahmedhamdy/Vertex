@@ -61,7 +61,7 @@ fun ForecastDetailsScreenContent(
 ) {
     Column(
         modifier = modifier) {
-        // title of the location
+        // title of the locationState
         Text(
             text = state.city.name,
             style = MaterialTheme.typography.titleLarge,

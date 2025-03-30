@@ -34,7 +34,7 @@ fun PermissionDialog(
             ) {
                 Text(text = "Important Note", style = MaterialTheme.typography.titleLarge)
 
-                Text(text = "Vertex needs location permissions to work correctly")
+                Text(text = "Vertex needs locationState permissions to work correctly")
 
                 Row {
                     TextButton (

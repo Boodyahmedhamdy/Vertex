@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +47,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.iti.vertex.data.repos.settings.SettingsRepository
+import com.iti.vertex.data.sources.local.settings.DataStoreHelper
+import com.iti.vertex.data.sources.local.settings.SettingsLocalDataSource
 import com.iti.vertex.navigation.VertexNavHost
 import com.iti.vertex.navigation.routes.topLevelRoutes
 import com.iti.vertex.ui.components.PermissionDialog
 import com.iti.vertex.ui.theme.VertexTheme
+import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
 const val LOCATION_PERMISSIONS_REQUEST_CODE = 12
@@ -59,6 +64,7 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private var showDialog: MutableState<Boolean> = mutableStateOf(false)
     private var showOpenSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
+    private lateinit var settingsRepository: SettingsRepository
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
@@ -66,17 +72,18 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         super.onCreate(savedInstanceState)
         locationManager = getSystemService(LocationManager::class.java)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
-
+        settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(this)))
         setContent {
+            val scope = rememberCoroutineScope()
             var lat by remember { mutableDoubleStateOf(0.0) }
             var long by remember { mutableDoubleStateOf(0.0) }
             var showDialogState by remember { showDialog }
             /**
              * check if the permissions are granted
-             * if granted -> get last location and update values
+             * if granted -> get last locationState and update values
              * if not granted -> request permissions from user
              * if user accepted -> return to app successfully
-             * if user refused -> show dialog to inform him that the app can't work without location permissions
+             * if user refused -> show dialog to inform him that the app can't work without locationState permissions
              * */
 
             val permissionsGranted = isLocationPermissionsGranted()
@@ -85,13 +92,14 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
             } else { // everything is setup
                 if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     locationClient.lastLocation.addOnSuccessListener {
-                        Log.i(TAG, "onCreate: location is $it before let")
+                        Log.i(TAG, "onCreate: locationState is $it before let")
                         it?.let {
                             lat = it.latitude
                             long = it.longitude
                             showDialog.value = false
 //                            showDialogState = false
-                            Log.i(TAG, "onCreate: location is lat: $lat, long:$long")
+                            scope.launch { settingsRepository.setCurrentLocation(lat, long) }
+                            Log.i(TAG, "onCreate: locationState is lat: $lat, long:$long")
                         }
                     }
                 } else {

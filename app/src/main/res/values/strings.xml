@@ -31,4 +31,5 @@
     <string name="wind_speed_unit">Wind Speed Unit</string>
     <string name="error_while_getting_forecast">Error while Getting Forecast</string>
     <string name="loaded_forecast_successfully">Loaded Forecast Successfully</string>
+    <string name="current_location_is_latitude_longitude">Current location is latitude: %1$s longitude: %2$s</string>
 </resources>

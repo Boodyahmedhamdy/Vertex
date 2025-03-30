@@ -83,7 +83,7 @@ fun FavoritesScreen(
                 val random = generateRandomLatLng()
                 viewModel.insertLocationToFavorite(lat = random.first, long = random.second)
             },) {
-                Icon(imageVector = Icons.Filled.Place, contentDescription = "add location")
+                Icon(imageVector = Icons.Filled.Place, contentDescription = "add locationState")
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackBarState) }

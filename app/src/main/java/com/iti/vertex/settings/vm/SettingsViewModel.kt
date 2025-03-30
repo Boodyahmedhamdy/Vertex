@@ -3,10 +3,10 @@ package com.iti.vertex.settings.vm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iti.vertex.data.repos.settings.ISettingsRepository
 import com.iti.vertex.data.sources.local.settings.Language
 import com.iti.vertex.data.sources.local.settings.LocationProvider
+import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.data.sources.local.settings.TempUnit
 import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +32,9 @@ class SettingsViewModel(
     private val _locationProviderState: MutableStateFlow<LocationProvider> = MutableStateFlow(LocationProvider.GPS)
     val locationProviderState = _locationProviderState.asStateFlow()
 
+    private val _locationState = MutableStateFlow(MyLocation(1.1, 1.1))
+    val locationState = _locationState.asStateFlow()
+
     init {
         Log.i(TAG, "init: viewmodel created")
         observeSettings()
@@ -42,6 +45,7 @@ class SettingsViewModel(
         getWindUnitState()
         getTempUnitState()
         getLocationProviderState()
+        getLocationState()
     }
 
     private fun getTempUnitState() {
@@ -72,10 +76,14 @@ class SettingsViewModel(
         viewModelScope.launch {
             repository.getCurrentLocationProvider().collect {newProvider ->
                 _locationProviderState.update { newProvider }
-                when(newProvider) {
-                    LocationProvider.GPS -> TODO()
-                    LocationProvider.MAP -> TODO()
-                }
+            }
+        }
+    }
+
+    private fun getLocationState() {
+        viewModelScope.launch {
+            repository.getCurrentLocation().collect {newLocation ->
+                _locationState.update { newLocation }
             }
         }
     }

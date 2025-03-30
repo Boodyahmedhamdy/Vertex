@@ -1,12 +1,12 @@
 package com.iti.vertex.data.sources.local.settings
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -15,11 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlin.math.log
 
 private const val TAG = "DataStoreHelper"
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "VERTEX_SETTINGS")
+
+data class MyLocation(val lat: Double, val long: Double)
 
 class DataStoreHelper(private val context: Context) {
 
@@ -28,6 +29,31 @@ class DataStoreHelper(private val context: Context) {
         val tempUnitKey = stringPreferencesKey("TEMP_UNIT_KEY")
         val languageKey = stringPreferencesKey("LANGUAGE_KEY")
         val locationProviderKey = stringPreferencesKey("LOCATION_PROVIDER_KEY")
+        val latitudeKey = doublePreferencesKey("LATITUDE_KEY")
+        val longitudeKey = doublePreferencesKey("LONGITUDE_KEY")
+    }
+
+    // locationState
+    fun getCurrentLocation() =
+        context.dataStore.data.map { settings ->
+            MyLocation(
+                lat = settings[latitudeKey] ?: 0.0,
+                long = settings[longitudeKey] ?: 0.0
+            )
+        }
+
+    suspend fun setCurrentLocation(lat: Double, long: Double) {
+        context.dataStore.edit { settings ->
+            settings[latitudeKey] = lat
+            settings[longitudeKey] = long
+        }
+    }
+
+    suspend fun setCurrentLocation(location: MyLocation) {
+        context.dataStore.edit { settings ->
+            settings[latitudeKey] = location.lat
+            settings[longitudeKey] = location.long
+        }
     }
 
     // temp
@@ -64,7 +90,7 @@ class DataStoreHelper(private val context: Context) {
         settings[languageKey] ?: Language.DEVICE_DEFAULT.name
     }
 
-    // location provider
+    // locationState provider
     suspend fun setCurrentLocationProvider(locationProvider: LocationProvider) {
         context.dataStore.edit { settings ->
             settings[locationProviderKey] = locationProvider.name
