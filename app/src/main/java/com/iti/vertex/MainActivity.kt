@@ -38,6 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -50,6 +51,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.iti.vertex.data.repos.settings.SettingsRepository
 import com.iti.vertex.data.sources.local.settings.DataStoreHelper
+import com.iti.vertex.data.sources.local.settings.LocationProvider
 import com.iti.vertex.data.sources.local.settings.SettingsLocalDataSource
 import com.iti.vertex.navigation.VertexNavHost
 import com.iti.vertex.navigation.routes.topLevelRoutes
@@ -76,8 +78,6 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(this)))
         setContent {
             val scope = rememberCoroutineScope()
-            var lat by remember { mutableDoubleStateOf(0.0) }
-            var long by remember { mutableDoubleStateOf(0.0) }
             var showDialogState by remember { showDialog }
             /**
              * check if the permissions are granted
@@ -95,12 +95,7 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                     locationClient.lastLocation.addOnSuccessListener {
                         Log.i(TAG, "onCreate: locationState is $it before let")
                         it?.let {
-                            lat = it.latitude
-                            long = it.longitude
                             showDialog.value = false
-//                            showDialogState = false
-                            scope.launch { settingsRepository.setCurrentLocation(lat, long) }
-                            Log.i(TAG, "onCreate: locationState is lat: $lat, long:$long")
                         }
                     }
                 } else {
@@ -108,7 +103,6 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                     openLocationSettings()
                 }
             }
-
 
             val navController = rememberNavController()
             val backStackEntry by  navController.currentBackStackEntryAsState()
@@ -145,15 +139,11 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                     if(showDialogState) {
                         PermissionDialog(
                             onDismissRequest = { showDialog.value = false },
-                            onConfirmRequest = {
-                                Log.i(TAG, "onCreate: request permissions clicked")
-                                requestLocationPermissions()
-                            }
+                            onConfirmRequest = { requestLocationPermissions() }
                         )
                     } else {
                         VertexNavHost(
                             navController = navController,
-                            lat = lat, long = long,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(innerPadding)
@@ -216,3 +206,30 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         )
     }
 }
+
+
+/**
+ * @Preview
+ * @Composable
+ * private fun Thinking() {
+ *     val locationProvider: LocationProvider =  getCurrentLocationProvider()
+ *     when(locationProvider) {
+ *         LocationProvider.GPS -> {
+ *             if(isLocationPermissionsGranted()) {
+ *                 if(isLocationEnabeld()) {
+ *                     val currentLocation = getCurrentLocation() // using fused client
+ *                 } else {
+ *                     openLocationSettings()
+ *                 }
+ *             } else {
+ *                 requestLocationPermissions()
+ *             }
+ *         }
+ *         LocationProvider.MAP -> {
+ *             val currentLocation = getCurrentLocationFromSettings()
+ *
+ *         }
+ *     }
+ * }
+ *
+*/

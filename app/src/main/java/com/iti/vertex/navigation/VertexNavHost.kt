@@ -59,8 +59,6 @@ private const val TAG = "VertexNavHost"
 @Composable
 fun VertexNavHost(
     navController: NavHostController,
-    lat: Double,
-    long: Double,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -76,11 +74,10 @@ fun VertexNavHost(
                 repository = ForecastRepository.getInstance(
                     remoteDataSource = ForecastRemoteDataSource(api = RetrofitHelper.apiService, ioDispatcher = Dispatchers.IO),
                     localDataSource = ForecastLocalDataSource(dao = DatabaseHelper.getForecastDao(context = context))
-                )
+                ),
+                settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(context)))
             )
             val viewModel: HomeViewModel = viewModel(factory = factory)
-            viewModel.setLatLong(lat = lat, long = long)
-            viewModel.load()
 
             HomeScreen(
                 viewModel = viewModel,
