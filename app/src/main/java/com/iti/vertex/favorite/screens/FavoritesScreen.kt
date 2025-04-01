@@ -121,7 +121,7 @@ fun FavoritesScreen(
                     }
 
                     LazyVerticalGrid (
-                        columns = GridCells.Adaptive(150.dp),
+                        columns = GridCells.Adaptive(200.dp),
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .fillMaxSize()

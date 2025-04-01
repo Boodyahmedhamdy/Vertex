@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -44,7 +46,9 @@ import com.iti.vertex.R
 import com.iti.vertex.locationpicker.vm.LocationPickerViewModel
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "LocationPickerScreen"
 @Composable
@@ -53,21 +57,16 @@ fun LocationPickerScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val placesClient = Places.createClient(context.applicationContext)
 
     val locationState = viewModel.locationState.collectAsStateWithLifecycle()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val searchQueryState = viewModel.searchQueryState.collectAsStateWithLifecycle()
-    var predictions by remember { mutableStateOf(emptyList<AutocompletePrediction>()) }
+    val predictionsState = viewModel.predictionsState.collectAsStateWithLifecycle()
 
 
     LaunchedEffect(Unit) {
-        viewModel.searchQuerySharedFlow.debounce(500.milliseconds).collect {
-            val response = placesClient.awaitFindAutocompletePredictions {
-                this.query = searchQueryState.value
-            }
-            predictions = response.autocompletePredictions
+        viewModel.searchQueryState.debounce(1.seconds).collect {
+            if(it.isNotBlank()) viewModel.fetchLocationPredictions(query = it)
         }
     }
 
@@ -78,7 +77,6 @@ fun LocationPickerScreen(
         searchQuery = searchQueryState.value,
         onStringQueryChanged = {
             viewModel.updateSearchQueryState(it)
-            viewModel.updateSearchQuerySharedFlow(it)
         },
         modifier = modifier,
         onFabClicked = {
@@ -86,9 +84,10 @@ fun LocationPickerScreen(
             viewModel.setAsCurrentLocation()
             navController.popBackStack()
         },
-        predictionsState = predictions,
+        predictionsState = predictionsState.value,
         onLocationSelected = {
             Log.i(TAG, "LocationPickerScreen: $it")
+            viewModel.fetchPlace(it)
         }
     )
 
@@ -107,7 +106,7 @@ fun LocationPickerScreenContent(
     predictionsState: List<AutocompletePrediction>,
     onLocationSelected: (AutocompletePlace) -> Unit
 ) {
-
+    val scope = rememberCoroutineScope()
     val markerState = rememberUpdatedMarkerState(position = locationState)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(locationState, 10f)
@@ -143,13 +142,22 @@ fun LocationPickerScreenContent(
                     cameraPositionState = cameraPositionState,
                     onMapClick = onMapClicked,
                     uiSettings = MapUiSettings(),
-                    properties = MapProperties(isMyLocationEnabled = true)
+                    properties = MapProperties(isMyLocationEnabled = true),
+                    onMapLoaded = {
+                        scope.launch {
+                            cameraPositionState.animate(CameraUpdateFactory.newLatLng(locationState))
+                        }
+                    }
                 ) {
                     Marker(
                         state = markerState,
                         title = "Cairo",
                         snippet = "Cairo Snippet"
                     )
+                }
+
+                LaunchedEffect(locationState) {
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLng(locationState))
                 }
             }
         }
@@ -165,13 +173,6 @@ fun LocationSearchBar(
     onLocationSelected: (AutocompletePlace) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    /*OutlinedTextField(
-        value = value, onValueChange = onValueChange, singleLine = true,
-        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.search_location)) },
-        modifier = modifier,
-        label = { Text(text = stringResource(R.string.search_for_location)) }
-    )*/
-
     PlacesAutocompleteTextField(
         searchText = value,
         onQueryChanged = onValueChange,

@@ -75,7 +75,9 @@ fun VertexNavHost(
                     remoteDataSource = ForecastRemoteDataSource(api = RetrofitHelper.apiService, ioDispatcher = Dispatchers.IO),
                     localDataSource = ForecastLocalDataSource(dao = DatabaseHelper.getForecastDao(context = context))
                 ),
-                settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(context)))
+                settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(
+                    DataStoreHelper(context)
+                ))
             )
             val viewModel: HomeViewModel = viewModel(factory = factory)
 
@@ -144,6 +146,7 @@ fun VertexNavHost(
                         localDataSource = ForecastLocalDataSource(DatabaseHelper.getForecastDao(context))
                     ),
                     settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(context))),
+                    placesClient =  Places.createClient(context.applicationContext)
                 )
             )
             LocationPickerScreen(
