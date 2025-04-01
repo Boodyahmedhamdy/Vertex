@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -66,7 +67,7 @@ fun HomeScreen(
             HomeScreenContent(
                 currentWeatherState = currentWeatherState.value,
                 forecastState = forecastState.value,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp)
             )
         }
     }
@@ -86,7 +87,7 @@ fun HomeScreenContent(
         // current weather section
         when(currentWeatherState) {
             Result.Loading -> {
-                Box(contentAlignment = Alignment.Center) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                     CircularProgressIndicator()
                 }
             }
@@ -108,7 +109,7 @@ fun HomeScreenContent(
         // forecast section
         when(forecastState) {
             Result.Loading -> {
-                Box(contentAlignment = Alignment.Center) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                     CircularProgressIndicator()
                 }
             }

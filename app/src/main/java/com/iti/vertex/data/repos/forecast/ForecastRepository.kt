@@ -19,21 +19,11 @@ class ForecastRepository private constructor(
     }
 
     override suspend fun getForecast(lat: Double, long: Double): FullForecastResponse {
-        try {
-            val data = remoteDataSource.getFullForecast(lat, long)
-            return data
-        } catch (ex: Exception) {
-            return FullForecastResponse()
-        }
+        return remoteDataSource.getFullForecast(lat, long)
     }
 
     override suspend fun getCurrentWeather(lat: Double, long: Double): CurrentWeatherResponse {
-        try {
-            val data = remoteDataSource.getCurrentWeather(lat = lat, long = long)
-            return data
-        } catch (ex: Exception) {
-            return CurrentWeatherResponse()
-        }
+        return remoteDataSource.getCurrentWeather(lat = lat, long = long)
     }
 
     fun getFavoriteForecasts() = localDataSource.getAllForecast()
