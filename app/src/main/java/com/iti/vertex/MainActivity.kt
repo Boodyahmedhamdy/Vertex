@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -57,6 +59,9 @@ import com.iti.vertex.navigation.VertexNavHost
 import com.iti.vertex.navigation.routes.topLevelRoutes
 import com.iti.vertex.ui.components.PermissionDialog
 import com.iti.vertex.ui.theme.VertexTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
@@ -66,8 +71,8 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private var showDialog: MutableState<Boolean> = mutableStateOf(false)
-    private var showOpenSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
     private lateinit var settingsRepository: SettingsRepository
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
@@ -76,36 +81,12 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         locationManager = getSystemService(LocationManager::class.java)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
         settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(this)))
+
         setContent {
-            val scope = rememberCoroutineScope()
             var showDialogState by remember { showDialog }
-            /**
-             * check if the permissions are granted
-             * if granted -> get last locationState and update values
-             * if not granted -> request permissions from user
-             * if user accepted -> return to app successfully
-             * if user refused -> show dialog to inform him that the app can't work without locationState permissions
-             * */
-
-            val permissionsGranted = isLocationPermissionsGranted()
-            if(!permissionsGranted) {
-                showDialog.value = true
-            } else { // everything is setup
-                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    locationClient.lastLocation.addOnSuccessListener {
-                        Log.i(TAG, "onCreate: locationState is $it before let")
-                        it?.let {
-                            showDialog.value = false
-                        }
-                    }
-                } else {
-                    showOpenSettingsDialog.value = true
-                    openLocationSettings()
-                }
-            }
-
             val navController = rememberNavController()
             val backStackEntry by  navController.currentBackStackEntryAsState()
+
             VertexTheme {
                 Scaffold(
                     bottomBar = {
@@ -154,11 +135,44 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         }
     }
 
-    private fun openLocationSettings() {
-        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).also { startActivity(it) }
+    private fun handleMapProvider() {
+        Log.i(TAG, "handleMapProvider: current location provider is MAP")
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "onResume: ")
+        lifecycleScope.launch {
+            settingsRepository.getCurrentLocationProvider().collect {currentLocationProvider ->
+                when(currentLocationProvider) {
+                    LocationProvider.GPS -> handleGpsProvider()
+                    LocationProvider.MAP -> handleMapProvider()
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun handleGpsProvider() {
+        if(isLocationPermissionsGranted()) { // permissions are okay
+            if(isGpsEnabled()) { // gps is on
+                locationClient.lastLocation.addOnSuccessListener {
+                    it?.let {
+                        Log.i(TAG, "handleGpsProvider: current location is lat=${it.latitude}, long=${it.longitude}")
+                        lifecycleScope.launch { settingsRepository.setCurrentLocation(it.latitude, it.longitude) }
+                    }
+                }
+            } else { // gps is off
+                openLocationSettings()
+            }
+        } else { // permissions are not granted
+            requestLocationPermissions()
+        }
+    }
+
+    private fun isGpsEnabled(): Boolean = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    private fun openLocationSettings() { Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).also { startActivity(it) } }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -173,6 +187,7 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                     Log.i(TAG, "onRequestPermissionsResult: user accepted everything")
                     showDialog.value = false
                 } else {
+                    Log.e(TAG, "onRequestPermissionsResult: user denied the permissions")
                     showDialog.value = true
                 }
             }
@@ -192,7 +207,7 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
             Log.i(TAG, "isLocationPermissionsGranted: granted")
             return true
         } else {
-            Log.i(TAG, "isLocationPermissionsGranted: Refused")
+            Log.i(TAG, "isLocationPermissionsGranted: denied")
             return false
         }
     }
@@ -206,30 +221,3 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         )
     }
 }
-
-
-/**
- * @Preview
- * @Composable
- * private fun Thinking() {
- *     val locationProvider: LocationProvider =  getCurrentLocationProvider()
- *     when(locationProvider) {
- *         LocationProvider.GPS -> {
- *             if(isLocationPermissionsGranted()) {
- *                 if(isLocationEnabeld()) {
- *                     val currentLocation = getCurrentLocation() // using fused client
- *                 } else {
- *                     openLocationSettings()
- *                 }
- *             } else {
- *                 requestLocationPermissions()
- *             }
- *         }
- *         LocationProvider.MAP -> {
- *             val currentLocation = getCurrentLocationFromSettings()
- *
- *         }
- *     }
- * }
- *
-*/

@@ -54,7 +54,7 @@ fun LocationPickerScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val placesClient = Places.createClient(context)
+    val placesClient = Places.createClient(context.applicationContext)
 
     val locationState = viewModel.locationState.collectAsStateWithLifecycle()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -83,6 +83,7 @@ fun LocationPickerScreen(
         modifier = modifier,
         onFabClicked = {
             viewModel.addSelectedLocationToFavorite()
+            viewModel.setAsCurrentLocation()
             navController.popBackStack()
         },
         predictionsState = predictions,

@@ -45,19 +45,20 @@ class LocationPickerViewModel(
             } catch (ex: Exception) {
                 _uiState.update { Result.Error(ex.message ?: "ERROR") }
             }
-
         }
     }
 
-    fun updateSearchQuerySharedFlow(query: String) {
-        viewModelScope.launch { _searchQuerySharedFlow.emit(query) }
+    fun setAsCurrentLocation() {
+        viewModelScope.launch {
+            settingsRepo.setCurrentLocation(lat = _locationState.value.latitude, long = _locationState.value.longitude)
+        }
     }
+
+    fun updateSearchQuerySharedFlow(query: String) { viewModelScope.launch { _searchQuerySharedFlow.emit(query) } }
 
     fun updateSearchQueryState(query: String) = _searchQueryState.update { query }
 
-    fun updateLocationState(latLng: LatLng) {
-        _locationState.update { latLng }
-    }
+    fun updateLocationState(latLng: LatLng) { _locationState.update { latLng } }
 
     private fun loadCurrentLocation() {
         viewModelScope.launch {
