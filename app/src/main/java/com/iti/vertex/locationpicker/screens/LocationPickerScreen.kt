@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -123,7 +124,7 @@ fun LocationPickerScreenContent(
                 onLocationSelected = onLocationSelected
             )
                  },
-        floatingActionButton = { Button(onClick = onFabClicked) { Icon(Icons.Outlined.Add, contentDescription = "add location to favorite") } },
+        floatingActionButton = { FloatingActionButton(onClick = onFabClicked) { Icon(Icons.Outlined.Add, contentDescription = "add location to favorite") } },
         floatingActionButtonPosition = FabPosition.Center
     ) {innerPadding ->
 
