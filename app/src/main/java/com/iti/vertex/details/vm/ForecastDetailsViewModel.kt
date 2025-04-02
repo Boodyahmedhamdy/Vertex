@@ -6,8 +6,6 @@ import com.iti.vertex.data.repos.forecast.IForecastRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.settings.MyLocation
-import com.iti.vertex.data.sources.local.settings.TempUnit
-import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,9 +31,9 @@ class ForecastDetailsViewModel(
         }
     }
 
-    fun setCurrentLocation(lat: Double, long: Double) {
+    fun setCurrentLocation(myLocation: MyLocation) {
         viewModelScope.launch {
-            settingsRepo.setCurrentLocation(lat, long)
+            settingsRepo.setCurrentLocation(myLocation)
         }
     }
 

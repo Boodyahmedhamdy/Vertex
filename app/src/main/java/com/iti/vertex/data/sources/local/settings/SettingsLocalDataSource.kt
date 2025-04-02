@@ -38,9 +38,6 @@ class SettingsLocalDataSource(
 
     // locationState
     override fun getCurrentLocation(): Flow<MyLocation> = dataStoreHelper.getCurrentLocation()
-    override suspend fun setCurrentLocation(lat: Double, long: Double) = withContext(Dispatchers.IO) {
-        dataStoreHelper.setCurrentLocation(lat, long)
-    }
     override suspend fun setCurrentLocation(location: MyLocation) = withContext(Dispatchers.IO) {
         dataStoreHelper.setCurrentLocation(location)
     }

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
+import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.details.vm.ForecastDetailsViewModel
 import com.iti.vertex.favorite.screens.EmptyScreen
 import com.iti.vertex.home.components.ForecastSectionDay
@@ -34,8 +35,8 @@ fun ForecastDetailsScreen(
 
     ForecastDetailsScreenContent(
         uiState = uiState.value,
-        onSetCurrentLocationClicked = { lat, long ->
-            viewModel.setCurrentLocation(lat, long)
+        onSetCurrentLocationClicked = {
+            viewModel.setCurrentLocation(it)
         },
         modifier = modifier
     )
@@ -45,7 +46,7 @@ fun ForecastDetailsScreen(
 @Composable
 fun ForecastDetailsScreenContent(
     uiState: Result<out ForecastEntity>,
-    onSetCurrentLocationClicked: (lat: Double, long: Double) -> Unit,
+    onSetCurrentLocationClicked: (myLocation: MyLocation) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when(uiState) {
@@ -61,7 +62,10 @@ fun ForecastDetailsScreenContent(
         }
         is Result.Success -> {
             Column {
-                OutlinedButton( onClick = { onSetCurrentLocationClicked(uiState.data.city.coord.lat, uiState.data.city.coord.lon) } ) {
+                OutlinedButton( onClick = {
+                    val myLocation = MyLocation(lat = uiState.data.city.coord.lat, long = uiState.data.city.coord.lon, cityName = uiState.data.city.name)
+                    onSetCurrentLocationClicked(myLocation)
+                } ) {
                     Text(text = stringResource(R.string.set_as_current_location))
                 }
 

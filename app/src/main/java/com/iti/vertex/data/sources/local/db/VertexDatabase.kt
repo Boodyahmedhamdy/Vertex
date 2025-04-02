@@ -5,13 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.iti.vertex.alarms.AlarmEntity
+import com.iti.vertex.alarms.AlarmsDao
 import com.iti.vertex.data.sources.local.db.converters.TypeConverter
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 
-@Database(entities = [ForecastEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ForecastEntity::class, AlarmEntity::class], version = 1, exportSchema = false)
 @TypeConverters(TypeConverter::class)
 abstract class VertexDatabase: RoomDatabase() {
     abstract fun getForecastDao(): ForecastDao
+    abstract fun getAlarmsDao(): AlarmsDao
 
     companion object {
         private var INSTANCE: VertexDatabase? = null

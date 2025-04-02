@@ -16,7 +16,6 @@ interface ISettingsLocalDataSource {
     suspend fun setCurrentTempUnit(tempUnit: TempUnit)
 
     fun getCurrentLocation(): Flow<MyLocation>
-    suspend fun setCurrentLocation(lat: Double, long: Double)
     suspend fun setCurrentLocation(location: MyLocation)
 
 }

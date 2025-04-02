@@ -8,4 +8,6 @@ object DatabaseHelper {
 
     fun getForecastDao(context: Context) = getDatabase(context).getForecastDao()
 
+    fun getAlarmsDao(context: Context) = getDatabase(context).getAlarmsDao()
+
 }

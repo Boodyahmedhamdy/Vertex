@@ -1,6 +1,7 @@
 package com.iti.vertex.data.sources.local.settings
 
 import android.content.Context
+import android.location.Geocoder
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -9,6 +10,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.iti.vertex.R
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +22,7 @@ private const val TAG = "DataStoreHelper"
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "VERTEX_SETTINGS")
 
-data class MyLocation(val lat: Double, val long: Double)
+data class MyLocation(val lat: Double, val long: Double, val cityName: String = "")
 
 class DataStoreHelper(private val context: Context) {
 
@@ -31,6 +33,7 @@ class DataStoreHelper(private val context: Context) {
         val locationProviderKey = stringPreferencesKey("LOCATION_PROVIDER_KEY")
         val latitudeKey = doublePreferencesKey("LATITUDE_KEY")
         val longitudeKey = doublePreferencesKey("LONGITUDE_KEY")
+        val cityNameKey = stringPreferencesKey("CITY_NAME_KEY")
     }
 
     // locationState
@@ -38,21 +41,19 @@ class DataStoreHelper(private val context: Context) {
         context.dataStore.data.map { settings ->
             MyLocation(
                 lat = settings[latitudeKey] ?: 0.0,
-                long = settings[longitudeKey] ?: 0.0
+                long = settings[longitudeKey] ?: 0.0,
+                cityName = settings[cityNameKey] ?: "NONE"
             )
         }
 
-    suspend fun setCurrentLocation(lat: Double, long: Double) {
-        context.dataStore.edit { settings ->
-            settings[latitudeKey] = lat
-            settings[longitudeKey] = long
-        }
-    }
-
     suspend fun setCurrentLocation(location: MyLocation) {
+        val geoCoder = Geocoder(context)
+        val names = geoCoder.getFromLocation(location.lat, location.long, 1) ?: emptyList()
+        val cityName = names.first().countryName
         context.dataStore.edit { settings ->
             settings[latitudeKey] = location.lat
             settings[longitudeKey] = location.long
+            settings[cityNameKey] = cityName
         }
     }
 

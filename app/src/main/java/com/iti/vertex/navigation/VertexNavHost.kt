@@ -1,5 +1,6 @@
 package com.iti.vertex.navigation
 
+import android.app.AlarmManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -24,7 +25,12 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.google.android.libraries.places.api.Places
 import com.iti.vertex.BuildConfig
+import com.iti.vertex.alarms.VertexAlarmManager
 import com.iti.vertex.alarms.screens.AlarmsScreen
+import com.iti.vertex.alarms.vm.AlarmsLocalDataSource
+import com.iti.vertex.alarms.vm.AlarmsRepository
+import com.iti.vertex.alarms.vm.AlarmsViewModel
+import com.iti.vertex.alarms.vm.AlarmsViewModelFactory
 import com.iti.vertex.data.repos.forecast.ForecastRepository
 import com.iti.vertex.data.repos.settings.SettingsRepository
 import com.iti.vertex.data.sources.local.db.DatabaseHelper
@@ -114,9 +120,21 @@ fun VertexNavHost(
         }
 
         composable<Routes.AlarmsScreenRoute> {
-            AlarmsScreen(modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp))
+
+            val viewModel: AlarmsViewModel = viewModel(
+                factory = AlarmsViewModelFactory(
+                    alarmManager = VertexAlarmManager(
+                        context = context, alarmManager = context.getSystemService(AlarmManager::class.java)
+                    ),
+                    alarmsRepository = AlarmsRepository.getInstance(AlarmsLocalDataSource(alarmsDao = DatabaseHelper.getAlarmsDao(context))),
+                    settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(context)))
+                )
+            )
+
+            AlarmsScreen(
+                viewModel = viewModel,
+                modifier = Modifier.fillMaxSize().padding(8.dp)
+            )
         }
 
         composable<Routes.SettingsScreenRoute> {
@@ -135,9 +153,9 @@ fun VertexNavHost(
             )
         }
 
+
+
         Places.initializeWithNewPlacesApiEnabled(context.applicationContext, BuildConfig.MAPS_API_KEY)
-
-
         composable<Routes.LocationPickerScreenRoute> {
             val viewModel: LocationPickerViewModel = viewModel(
                 factory = LocationPickerViewModelFactory(

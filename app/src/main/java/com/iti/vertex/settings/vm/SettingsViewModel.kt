@@ -32,7 +32,7 @@ class SettingsViewModel(
     private val _locationProviderState: MutableStateFlow<LocationProvider> = MutableStateFlow(LocationProvider.GPS)
     val locationProviderState = _locationProviderState.asStateFlow()
 
-    private val _locationState = MutableStateFlow(MyLocation(1.1, 1.1))
+    private val _locationState = MutableStateFlow(MyLocation(1.1, 1.1, ""))
     val locationState = _locationState.asStateFlow()
 
     init {

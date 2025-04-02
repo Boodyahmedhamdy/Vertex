@@ -12,6 +12,7 @@ import com.google.android.libraries.places.api.net.kotlin.awaitFindAutocompleteP
 import com.google.android.libraries.places.compose.autocomplete.models.AutocompletePlace
 import com.iti.vertex.data.repos.forecast.ForecastRepository
 import com.iti.vertex.data.repos.settings.SettingsRepository
+import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +62,12 @@ class LocationPickerViewModel(
 
     fun setAsCurrentLocation() {
         viewModelScope.launch {
-            settingsRepo.setCurrentLocation(lat = _locationState.value.latitude, long = _locationState.value.longitude)
+            val myLocation = MyLocation(
+                lat = _locationState.value.latitude,
+                long = _locationState.value.longitude,
+                cityName = ""
+            )
+            settingsRepo.setCurrentLocation(location = myLocation)
         }
     }
 

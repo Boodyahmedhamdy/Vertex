@@ -54,7 +54,6 @@ class SettingsRepository private constructor(
 
     // locationState
     override fun getCurrentLocation(): Flow<MyLocation> = localDataSource.getCurrentLocation()
-    override suspend fun setCurrentLocation(lat: Double, long: Double) = localDataSource.setCurrentLocation(lat, long)
     override suspend fun setCurrentLocation(location: MyLocation) = localDataSource.setCurrentLocation(location)
 
 

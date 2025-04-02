@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -54,6 +55,7 @@ import com.google.android.gms.location.LocationServices
 import com.iti.vertex.data.repos.settings.SettingsRepository
 import com.iti.vertex.data.sources.local.settings.DataStoreHelper
 import com.iti.vertex.data.sources.local.settings.LocationProvider
+import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.data.sources.local.settings.SettingsLocalDataSource
 import com.iti.vertex.navigation.VertexNavHost
 import com.iti.vertex.navigation.routes.topLevelRoutes
@@ -160,7 +162,10 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                 locationClient.lastLocation.addOnSuccessListener {
                     it?.let {
                         Log.i(TAG, "handleGpsProvider: current location is lat=${it.latitude}, long=${it.longitude}")
-                        lifecycleScope.launch { settingsRepository.setCurrentLocation(it.latitude, it.longitude) }
+                        val geoCoder = Geocoder(this)
+                        val name = geoCoder.getFromLocation(it.latitude, it.longitude, 1) ?: emptyList()
+                        val myLocation = MyLocation(lat = it.latitude, long = it.longitude, cityName = name.first().countryName ?: "NONE")
+                        lifecycleScope.launch { settingsRepository.setCurrentLocation(myLocation) }
                     }
                 }
             } else { // gps is off
