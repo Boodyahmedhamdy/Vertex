@@ -1,4 +1,4 @@
-package com.iti.vertex.alarms
+package com.iti.vertex.data.sources.local.db.entities
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,7 +7,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import com.iti.vertex.data.dtos.City
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "alarms")

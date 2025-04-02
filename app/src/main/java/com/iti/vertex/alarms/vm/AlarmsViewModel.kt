@@ -6,8 +6,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.iti.vertex.alarms.AlarmEntity
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.alarms.VertexAlarmManager
+import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -79,7 +80,11 @@ class AlarmsViewModel(
         }
     }
 
-    private fun deleteAlarm(alarmEntity: AlarmEntity) {
+    fun cancelAlarm(alarmEntity: AlarmEntity) {
+        vertexAlarmManager.cancel(alarmEntity)
+    }
+
+    fun deleteAlarm(alarmEntity: AlarmEntity) {
         viewModelScope.launch { alarmsRepository.deleteAlarm(alarmEntity) }
     }
 

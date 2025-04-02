@@ -5,8 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.iti.vertex.alarms.AlarmEntity
-import com.iti.vertex.alarms.AlarmsDao
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
+import com.iti.vertex.data.sources.local.db.entities.AlarmsDao
 import com.iti.vertex.data.sources.local.db.converters.TypeConverter
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 

@@ -1,7 +1,7 @@
-package com.iti.vertex.alarms.vm
+package com.iti.vertex.data.sources.local.alarms
 
-import com.iti.vertex.alarms.AlarmEntity
-import com.iti.vertex.alarms.AlarmsDao
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
+import com.iti.vertex.data.sources.local.db.entities.AlarmsDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

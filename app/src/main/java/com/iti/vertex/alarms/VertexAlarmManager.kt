@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
+import kotlin.math.log
 
 private const val TAG = "VertexAlarmManager"
 
@@ -36,11 +38,19 @@ class VertexAlarmManager(
             pendingIntent
         )
         Log.i(TAG, "schedule: set exact alarm")
-
     }
 
     fun cancel(alarmEntity: AlarmEntity) {
         Log.i(TAG, "cancel: started")
+        val intent = Intent(context, AlarmReceiver::class.java)
+        Log.i(TAG, "cancel: created intent")
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, alarmEntity.id, intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
+        Log.i(TAG, "cancel: created pending intent")
+        alarmManager.cancel(pendingIntent)
+        Log.i(TAG, "cancel: finished ")
     }
 
 

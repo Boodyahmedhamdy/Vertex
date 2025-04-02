@@ -72,8 +72,6 @@ fun FavoritesScreen(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                /*val random = generateRandomLatLng()
-                viewModel.insertLocationToFavorite(lat = random.first, long = random.second)*/
                 navController.navigate(Routes.LocationPickerScreenRoute)
             },) {
                 Icon(imageVector = Icons.Filled.Place, contentDescription = "add locationState")
@@ -129,7 +127,7 @@ fun FavoritesScreen(
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        items(uiState.data) {
+                        items(uiState.data, key = {it.city.id}) {
                             FavoriteLocationListItem(
                                 state = it,
                                 onItemClicked = {
@@ -143,7 +141,7 @@ fun FavoritesScreen(
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp)
+                                    .padding(8.dp).animateItem()
                             )
                         }
                     }

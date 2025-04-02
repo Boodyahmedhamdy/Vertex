@@ -1,8 +1,6 @@
 package com.iti.vertex.alarms.screens
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.vertex.R
-import com.iti.vertex.alarms.AlarmEntity
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.alarms.vm.AlarmsViewModel
 import com.iti.vertex.alarms.vm.NotifyingMethod
 import com.iti.vertex.favorite.screens.EmptyScreen
@@ -73,16 +71,20 @@ fun AlarmsScreen(
             viewModel.updateShowBottomSheetState(false)
             viewModel.scheduleAlarm()
         },
+        modifier = modifier,
         startTimeState = startTimeState.value,
         endTimeState = endTimeState.value,
         notifyingMethodState = notifyingMethodState.value,
         onMethodClicked = { viewModel.updateNotifyingMethodState(it) },
-        modifier = modifier,
+        onDeleteAlarmClicked = {
+            viewModel.cancelAlarm(it)
+            viewModel.deleteAlarm(it)
+        },
+        onAlarmClicked = { Log.i(TAG, "AlarmsScreen: clicked on ${it}") },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmsScreenContent(
     alarmsState: Result<out List<AlarmEntity>>,
@@ -94,7 +96,9 @@ fun AlarmsScreenContent(
     startTimeState: TimePickerState,
     endTimeState: TimePickerState,
     notifyingMethodState: NotifyingMethod,
-    onMethodClicked: (NotifyingMethod) -> Unit
+    onMethodClicked: (NotifyingMethod) -> Unit,
+    onDeleteAlarmClicked: (AlarmEntity) -> Unit,
+    onAlarmClicked: (AlarmEntity) -> Unit
 ) {
     Scaffold(
         modifier = modifier,
@@ -120,16 +124,12 @@ fun AlarmsScreenContent(
                         .padding(innerPadding),
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    items(alarmsState.data) {item ->
+                    items(alarmsState.data, key = {it.id}) {item ->
                         AlarmCard(
                             alarmEntity = item,
-                            onDeleteClicked = {
-                                Log.i(TAG, "AlarmsScreenContent: delete clicked on id:${it.id}")
-                            },
-                            onItemClicked = {
-                                Log.i(TAG, "AlarmsScreenContent: clicked on id: ${it.id}")
-                            },
-                            modifier = Modifier.padding(8.dp)
+                            onDeleteClicked = onDeleteAlarmClicked,
+                            onItemClicked = onAlarmClicked,
+                            modifier = Modifier.padding(8.dp).animateItem()
                         )
                     }
                 }
@@ -160,7 +160,9 @@ fun AlarmCard(
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier, onClick = { onItemClicked(alarmEntity) }) {
-        Row(modifier = Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = alarmEntity.city, style = MaterialTheme.typography.displaySmall)
                 Text(text = "From: ${alarmEntity.startTime} To ${alarmEntity.endTime}")
@@ -192,12 +194,16 @@ fun AlarmPickerBottomSheet(
 
         Text(text = "Start Time", style = MaterialTheme.typography.titleMedium)
         TimeInput(state = startTimeState)
-        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
+        HorizontalDivider(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp))
 
 
         Text(text = "End Time", style = MaterialTheme.typography.titleMedium)
         TimeInput(state = endTimeState)
-        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
+        HorizontalDivider(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp))
 
 
         Text(text = "Notification Method", style = MaterialTheme.typography.titleMedium)
@@ -213,7 +219,9 @@ fun AlarmPickerBottomSheet(
             }
         }
 
-        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
+        HorizontalDivider(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp))
 
         Row (
             modifier = Modifier.fillMaxWidth(),

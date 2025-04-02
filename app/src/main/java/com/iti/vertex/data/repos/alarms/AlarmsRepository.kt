@@ -1,7 +1,7 @@
-package com.iti.vertex.alarms.vm
+package com.iti.vertex.data.repos.alarms
 
-import com.iti.vertex.alarms.AlarmEntity
-import com.iti.vertex.alarms.AlarmReceiver
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
+import com.iti.vertex.data.sources.local.alarms.AlarmsLocalDataSource
 
 class AlarmsRepository private constructor(
     private val localDataSource: AlarmsLocalDataSource
