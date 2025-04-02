@@ -42,6 +42,7 @@ import com.iti.vertex.R
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.alarms.vm.AlarmsViewModel
 import com.iti.vertex.alarms.vm.NotifyingMethod
+import com.iti.vertex.alarms.vm.toReadableTime
 import com.iti.vertex.favorite.screens.EmptyScreen
 import com.iti.vertex.utils.Result
 
@@ -69,7 +70,8 @@ fun AlarmsScreen(
             viewModel.updateStartTimeState(startTime)
             viewModel.updateEndTimeState(endTime)
             viewModel.updateShowBottomSheetState(false)
-            viewModel.scheduleAlarm()
+//            viewModel.scheduleAlarm()
+            viewModel.scheduleAlarmUsingWorkManager()
         },
         modifier = modifier,
         startTimeState = startTimeState.value,
@@ -165,7 +167,7 @@ fun AlarmCard(
             .padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = alarmEntity.city, style = MaterialTheme.typography.displaySmall)
-                Text(text = "From: ${alarmEntity.startTime} To ${alarmEntity.endTime}")
+                Text(text = "From: ${alarmEntity.startTime.toReadableTime()} To ${alarmEntity.endTime.toReadableTime()}")
             }
             IconButton(onClick = { onDeleteClicked(alarmEntity) }) {
                 Icon(Icons.Outlined.Delete, contentDescription = "Delete alarm", tint = MaterialTheme.colorScheme.error)

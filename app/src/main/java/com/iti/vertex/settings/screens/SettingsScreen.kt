@@ -210,21 +210,3 @@ fun SettingsScreenContent(
     }
 }
 
-/*
-@Preview
-@Composable
-private fun SettingsScreenPreview() {
-    if(!locationPemissionsGranted()) { // not granted
-        showLocationPermissionsNeededDialog(
-            onConfirm = { requestLocationPermissions() },
-            onCancel = { finish() }
-        )
-    } else { // permissions granted
-        if(!locationIsEnabled) {
-            openLocationSettings()
-        } else {
-            val location = getCurrentLocation()
-            setCurrentLocation(location)
-        }
-    }
-}*/

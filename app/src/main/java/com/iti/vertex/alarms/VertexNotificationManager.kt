@@ -27,7 +27,7 @@ class VertexNotificationManager(
             .setContentText("You have Some Notifications About ${alarmEntity.city}")
             .setSmallIcon(R.drawable.clouds)
             .setContentIntent(pendingIntent)
-            // add sound here
+            .setAutoCancel(true)
             .build()
 
         notificationManager.notify(alarmEntity.id, notification)

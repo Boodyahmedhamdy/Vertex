@@ -126,8 +126,8 @@ dependencies {
     // auto complete
     implementation("com.google.maps.android:places-compose:0.1.3")
 
-    // splash screen
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    val work_version = "2.10.0"
+    implementation("androidx.work:work-runtime-ktx:$work_version")
 
 
 }

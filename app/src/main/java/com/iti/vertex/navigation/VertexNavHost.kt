@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import androidx.work.WorkManager
 import com.google.android.libraries.places.api.Places
 import com.iti.vertex.BuildConfig
 import com.iti.vertex.alarms.VertexAlarmManager
@@ -117,7 +118,8 @@ fun VertexNavHost(
                     alarmsRepository = AlarmsRepository.getInstance(AlarmsLocalDataSource(alarmsDao = DatabaseHelper.getAlarmsDao(context))),
                     settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(
                         DataStoreHelper(context)
-                    ))
+                    )),
+                    workManager = WorkManager.getInstance(context)
                 )
             )
 
@@ -142,7 +144,6 @@ fun VertexNavHost(
                 modifier = Modifier.fillMaxSize().padding(8.dp)
             )
         }
-
 
 
         Places.initializeWithNewPlacesApiEnabled(context.applicationContext, BuildConfig.MAPS_API_KEY)
