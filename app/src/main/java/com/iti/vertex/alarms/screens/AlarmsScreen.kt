@@ -33,9 +33,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -105,6 +107,7 @@ fun AlarmsScreenContent(
 ) {
     Scaffold(
         modifier = modifier,
+        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.alarms)) }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { onFabButtonClicked() }) { Icon(Icons.Outlined.Add, contentDescription = "Add Alarm") }
         },

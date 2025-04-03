@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,13 +68,11 @@ fun SettingsScreen(
             }
         },
         locationState = locationState.value,
-        modifier = modifier.verticalScroll(rememberScrollState()),
+        modifier = modifier,
     )
-
-
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreenContent(
     windSpeedUnitState: WindSpeedUnit,
@@ -85,128 +86,136 @@ fun SettingsScreenContent(
     locationState: MyLocation,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-    ){
 
-        // wind speed card
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)) {
-            // title
-            Text(
-                text = stringResource(R.string.wind_speed_unit),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(8.dp)
-            )
+    Scaffold(
+        modifier = modifier,
+        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.settings)) }) },
+        ) { innerPadding ->
+        Column(
+            modifier = Modifier.padding(innerPadding).verticalScroll(rememberScrollState())
+        ){
 
-            // options
-            FlowRow {
-                WindSpeedUnit.entries.forEach { windSpeedUnit ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onWindSpeedUnitChanged(windSpeedUnit) }
-                    ){
-                        RadioButton(
-                            selected = windSpeedUnitState == windSpeedUnit,
-                            onClick = { onWindSpeedUnitChanged(windSpeedUnit) }
-                        )
-                        Text(text = stringResource(windSpeedUnit.displayName))
+            // wind speed card
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)) {
+                // title
+                Text(
+                    text = stringResource(R.string.wind_speed_unit),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                // options
+                FlowRow {
+                    WindSpeedUnit.entries.forEach { windSpeedUnit ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable { onWindSpeedUnitChanged(windSpeedUnit) }
+                        ){
+                            RadioButton(
+                                selected = windSpeedUnitState == windSpeedUnit,
+                                onClick = { onWindSpeedUnitChanged(windSpeedUnit) }
+                            )
+                            Text(text = stringResource(windSpeedUnit.displayName))
+                        }
                     }
                 }
             }
-        }
 
-        // language
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)) {
-            // title
-            Text(
-                text = stringResource(R.string.language),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(8.dp)
-            )
+            // language
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)) {
+                // title
+                Text(
+                    text = stringResource(R.string.language),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
 
-            // options
-            FlowRow() {
-                Language.entries.forEach { language ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onLanguageChanged(language) }
-                    ){
-                        RadioButton(
-                            selected = languageState == language,
-                            onClick = { onLanguageChanged(language) }
-                        )
-                        Text(text = stringResource(language.displayName))
+                // options
+                FlowRow() {
+                    Language.entries.forEach { language ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable { onLanguageChanged(language) }
+                        ){
+                            RadioButton(
+                                selected = languageState == language,
+                                onClick = { onLanguageChanged(language) }
+                            )
+                            Text(text = stringResource(language.displayName))
+                        }
                     }
                 }
             }
-        }
 
-        // temperature unit card
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)) {
-            // title
-            Text(
-                text = stringResource(R.string.temperature_unit),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(8.dp)
-            )
+            // temperature unit card
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)) {
+                // title
+                Text(
+                    text = stringResource(R.string.temperature_unit),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
 
-            // options
-            FlowRow {
-                TempUnit.entries.forEach { tempUnit ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onTempUnitChanged(tempUnit) }
-                    ){
-                        RadioButton(
-                            selected = tempUnitState == tempUnit,
-                            onClick = { onTempUnitChanged(tempUnit) }
-                        )
-                        Text(text = stringResource(tempUnit.displayName))
+                // options
+                FlowRow {
+                    TempUnit.entries.forEach { tempUnit ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable { onTempUnitChanged(tempUnit) }
+                        ){
+                            RadioButton(
+                                selected = tempUnitState == tempUnit,
+                                onClick = { onTempUnitChanged(tempUnit) }
+                            )
+                            Text(text = stringResource(tempUnit.displayName))
+                        }
                     }
                 }
             }
-        }
 
-        // locationState provider
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)) {
-            // title
-            Text(
-                text = stringResource(R.string.location_provider),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(8.dp)
-            )
+            // locationState provider
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)) {
+                // title
+                Text(
+                    text = stringResource(R.string.location_provider),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
 
-            // options
-            FlowRow {
-                LocationProvider.entries.forEach { provider ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onLocationProviderChanged(provider) }
-                    ){
-                        RadioButton(
-                            selected = locationProviderState == provider,
-                            onClick = { onLocationProviderChanged(provider) }
-                        )
-                        Text(text = stringResource(provider.displayName))
+                // options
+                FlowRow {
+                    LocationProvider.entries.forEach { provider ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable { onLocationProviderChanged(provider) }
+                        ){
+                            RadioButton(
+                                selected = locationProviderState == provider,
+                                onClick = { onLocationProviderChanged(provider) }
+                            )
+                            Text(text = stringResource(provider.displayName))
+                        }
                     }
                 }
             }
+
+            Text(text = stringResource(
+                R.string.current_location_is_latitude_longitude,
+                locationState.lat,
+                locationState.long
+            ), modifier = Modifier.fillMaxWidth().padding(8.dp))
+
         }
-
-        Text(text = stringResource(
-            R.string.current_location_is_latitude_longitude,
-            locationState.lat,
-            locationState.long
-        ), modifier = Modifier.fillMaxWidth().padding(8.dp))
-
     }
+
+
 }
 

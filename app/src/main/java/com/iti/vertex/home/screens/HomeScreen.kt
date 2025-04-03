@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,8 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.iti.vertex.R
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.details.screens.ForecastSection
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
@@ -35,7 +38,6 @@ import com.iti.vertex.home.vm.HomeViewModel
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -57,7 +59,8 @@ fun HomeScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        topBar = { TopAppBar(title = { Text(text = stringResource(R.string.home)) }) },
     ) { paddingValues ->
         PullToRefreshBox(
             isRefreshing = isRefreshingState.value,
