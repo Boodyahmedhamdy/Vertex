@@ -121,6 +121,7 @@ fun VertexNavHost(
             viewModel.load(lat = route.lat, long = route.long)
             ForecastDetailsScreen(
                 viewModel = viewModel,
+                navController = navController,
                 modifier = Modifier.fillMaxSize().padding(8.dp)
             )
         }

@@ -1,6 +1,10 @@
 package com.iti.vertex.alarms.screens
 
+import android.Manifest
+import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,18 +67,31 @@ fun AlarmsScreen(
     val endTimeState = viewModel.endTimeState.collectAsStateWithLifecycle()
     val notifyingMethodState = viewModel.notifyingMethodState.collectAsStateWithLifecycle()
 
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if(isGranted) {
+            Log.i(TAG, "AlarmsScreen: Permission granted? $isGranted")
+            viewModel.updateShowBottomSheetState(true)
+        }
+    }
+
     AlarmsScreenContent(
         alarmsState = alarmsState.value,
         showBottomSheetState = showBottomSheetState.value,
-        onFabButtonClicked = { viewModel.updateShowBottomSheetState(true) },
+        onFabButtonClicked = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else viewModel.updateShowBottomSheetState(true)
+        },
         onBottomSheetDismissRequest = { viewModel.updateShowBottomSheetState(false) },
         onConfirmClicked =  { startTime, endTime ->
             Log.i(TAG, "AlarmsScreen: clicked on confirm")
             viewModel.updateStartTimeState(startTime)
             viewModel.updateEndTimeState(endTime)
             viewModel.updateShowBottomSheetState(false)
-//            viewModel.scheduleAlarm()
-            viewModel.scheduleAlarmUsingWorkManager()
+            viewModel.scheduleAlarm()
+//            viewModel.scheduleAlarmUsingWorkManager()
         },
         modifier = modifier,
         startTimeState = startTimeState.value,
@@ -135,7 +152,9 @@ fun AlarmsScreenContent(
                             alarmEntity = item,
                             onDeleteClicked = onDeleteAlarmClicked,
                             onItemClicked = onAlarmClicked,
-                            modifier = Modifier.padding(8.dp).animateItem()
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .animateItem()
                         )
                     }
                 }

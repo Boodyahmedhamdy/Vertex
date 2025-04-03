@@ -23,6 +23,13 @@ class VertexApp: Application() {
         )
         channel.description = "Used to Notify user by forecast alarms"
 
+        val soundUri = Uri.parse("android.resource://$packageName/${R.raw.gym}")
+        val audioAttributes = AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .build()
+
+        channel.setSound(soundUri, audioAttributes)
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
     }

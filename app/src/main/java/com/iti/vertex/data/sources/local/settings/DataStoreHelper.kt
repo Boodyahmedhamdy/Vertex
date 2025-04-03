@@ -101,7 +101,7 @@ class DataStoreHelper(private val context: Context) {
         }
     }
     fun getCurrentLocationProvider(): Flow<String> = context.dataStore.data.map { settings ->
-        settings[locationProviderKey] ?: LocationProvider.GPS.name
+        settings[locationProviderKey] ?: LocationProvider.MAP.name
     }
 
 }

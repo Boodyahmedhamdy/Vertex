@@ -9,6 +9,7 @@ import com.iti.vertex.data.sources.local.forecast.IForecastLocalDataSource
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -80,6 +81,20 @@ class ForecastRepositoryTest {
         assertEquals(1.1, result.city.coord.lon, 0.0)
     }
 
+    @Test
+    fun getAllFavoriteForecast_returnsListOf2Elements() = runBlocking {
+        // arrange
+        val firstEntity = ForecastEntity(city = City(coord = Coord(lat = 1.1, lon = 1.1)))
+        val secondEntity = ForecastEntity(city = City(coord = Coord(lat = 2.2, lon = 2.2)))
+        repository.addToFavorite(firstEntity)
+        repository.addToFavorite(secondEntity)
+
+        // act
+        val result = repository.getFavoriteForecasts().first()
+
+        // assert
+        assertEquals(2, result.size)
+    }
 
 
 
