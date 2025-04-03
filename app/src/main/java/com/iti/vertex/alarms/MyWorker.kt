@@ -13,7 +13,6 @@ class MyWorker(private val appContext: Context, params: WorkerParameters) : Coro
         val entity = AlarmEntity(
             id = inputData.getInt("id", 1),
             startTime = inputData.getLong("startTime", 1L),
-            endTime = inputData.getLong("endTime", 1L),
             city = inputData.getString("city") ?: "NONE"
         )
 

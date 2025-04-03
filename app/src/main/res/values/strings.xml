@@ -38,4 +38,6 @@
     <string name="search_for_places">Search for Places</string>
     <string name="back">back</string>
     <string name="location_forecast_details">Forecast Details</string>
+    <string name="notification">Notification</string>
+    <string name="alarm">Alarm</string>
 </resources>
