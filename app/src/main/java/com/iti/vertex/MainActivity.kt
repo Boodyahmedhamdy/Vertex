@@ -10,7 +10,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +22,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +69,20 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
             var showDialogState by remember { showDialog }
             val navController = rememberNavController()
             val backStackEntry by  navController.currentBackStackEntryAsState()
+
+            /*val locationPermissionLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { resultMap ->
+                val allGranted = resultMap.values.all { it == true }
+                if(allGranted) {
+                    handleMapProvider()
+                }
+            }
+
+
+            LaunchedEffect(Unit) {
+                locationPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+            }*/
 
             VertexTheme {
                 Scaffold(
