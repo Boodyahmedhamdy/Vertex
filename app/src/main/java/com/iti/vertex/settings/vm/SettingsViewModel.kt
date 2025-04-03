@@ -23,7 +23,7 @@ class SettingsViewModel(
     private val _windSpeedUnitState: MutableStateFlow<WindSpeedUnit> = MutableStateFlow(WindSpeedUnit.MILE_PER_HOUR)
     val windSpeedUnitState = _windSpeedUnitState.asStateFlow()
 
-    private val _languageState: MutableStateFlow<Language> = MutableStateFlow(Language.DEVICE_DEFAULT)
+    private val _languageState: MutableStateFlow<Language> = MutableStateFlow(Language.ENGLISH)
     val languageState = _languageState.asStateFlow()
 
     private val _tempUnitState: MutableStateFlow<TempUnit> = MutableStateFlow(TempUnit.KELVIN)

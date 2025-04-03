@@ -91,7 +91,7 @@ class DataStoreHelper(private val context: Context) {
         }
     }
     fun getCurrentLanguage(): Flow<String> = context.dataStore.data.map { settings ->
-        settings[languageKey] ?: Language.DEVICE_DEFAULT.name
+        settings[languageKey] ?: Language.ENGLISH.name
     }
 
     // locationState provider
@@ -123,7 +123,6 @@ enum class Language(
 ) {
     ARABIC(R.string.arabic, localeCode = "ar"),
     ENGLISH(R.string.english, localeCode = "en"),
-    DEVICE_DEFAULT(R.string.device_default, localeCode = "en-US")
 }
 
 /**
