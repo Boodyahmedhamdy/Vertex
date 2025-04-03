@@ -112,6 +112,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
+    // testing room
+    testImplementation("androidx.room:room-testing:$room_version")
 
     // data store
     implementation("androidx.datastore:datastore-preferences:1.1.4")

@@ -3,6 +3,11 @@ package com.iti.vertex.navigation
 import android.app.AlarmManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -62,6 +67,18 @@ fun VertexNavHost(
     NavHost(
         navController = navController,
         startDestination = Routes.HomeScreenRoute,
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(500)
+            ) + fadeIn(animationSpec = tween(500))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(500)
+            ) + fadeOut(animationSpec = tween(500))
+        },
         modifier = modifier
     ) {
         composable<Routes.HomeScreenRoute> {

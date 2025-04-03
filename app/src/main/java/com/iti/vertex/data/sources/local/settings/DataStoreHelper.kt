@@ -47,9 +47,12 @@ class DataStoreHelper(private val context: Context) {
         }
 
     suspend fun setCurrentLocation(location: MyLocation) {
-        val geoCoder = Geocoder(context)
-        val names = geoCoder.getFromLocation(location.lat, location.long, 1) ?: emptyList()
-        val cityName = names.first().countryName
+        val cityName = try {
+            val geoCoder = Geocoder(context)
+            val names = geoCoder.getFromLocation(location.lat, location.long, 1) ?: emptyList()
+            names.first().countryName
+        } catch (ex: Exception) { "NONE" }
+
         context.dataStore.edit { settings ->
             settings[latitudeKey] = location.lat
             settings[longitudeKey] = location.long

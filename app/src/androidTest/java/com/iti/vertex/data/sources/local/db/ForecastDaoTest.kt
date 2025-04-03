@@ -91,8 +91,6 @@ class ForecastDaoTest {
     }
 
     @After
-    fun finish() {
-        db.close()
-    }
+    fun finish() { db.close() }
 
 }

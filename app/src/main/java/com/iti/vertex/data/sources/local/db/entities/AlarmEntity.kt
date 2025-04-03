@@ -1,13 +1,7 @@
 package com.iti.vertex.data.sources.local.db.entities
 
-import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Entity
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
-import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "alarms")
 data class AlarmEntity(
@@ -16,19 +10,3 @@ data class AlarmEntity(
     val endTime: Long,
     val city: String,
 )
-
-
-@Dao
-interface AlarmsDao {
-    @Query("select * from alarms")
-    fun getAllAlarms(): Flow<List<AlarmEntity>>
-
-    @Query("select * from alarms where id = :id")
-    suspend fun getAlarmById(id: Int): AlarmEntity
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAlarm(alarmEntity: AlarmEntity)
-
-    @Delete
-    suspend fun deleteAlarm(alarmEntity: AlarmEntity)
-}

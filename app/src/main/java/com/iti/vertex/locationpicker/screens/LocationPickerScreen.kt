@@ -61,23 +61,15 @@ fun LocationPickerScreen(
 
     val locationState = viewModel.locationState.collectAsStateWithLifecycle()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-    val searchQueryState = viewModel.searchQueryState.collectAsStateWithLifecycle()
     val predictionsState = viewModel.predictionsState.collectAsStateWithLifecycle()
 
-
-    LaunchedEffect(Unit) {
-        viewModel.searchQueryState.debounce(1.seconds).collect {
-            if(it.isNotBlank()) viewModel.fetchLocationPredictions(query = it)
-        }
-    }
 
     LocationPickerScreenContent(
         uiState = uiState.value,
         locationState = locationState.value,
         onMapClicked = { viewModel.updateLocationState(it) },
-        searchQuery = searchQueryState.value,
         onStringQueryChanged = {
-            viewModel.updateSearchQueryState(it)
+            viewModel.updateSearchQuerySharedFlow(it)
         },
         modifier = modifier,
         onFabClicked = {
@@ -100,13 +92,13 @@ fun LocationPickerScreenContent(
     uiState: Result<out Unit>,
     locationState: LatLng,
     onMapClicked: (LatLng) -> Unit,
-    searchQuery: String,
     onStringQueryChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     onFabClicked: () -> Unit,
     predictionsState: List<AutocompletePrediction>,
     onLocationSelected: (AutocompletePlace) -> Unit
 ) {
+    var queryString by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val markerState = rememberUpdatedMarkerState(position = locationState)
     val cameraPositionState = rememberCameraPositionState {
@@ -117,8 +109,11 @@ fun LocationPickerScreenContent(
         modifier = modifier,
         topBar = {
             LocationSearchBar(
-                value = searchQuery,
-                onValueChange = onStringQueryChanged,
+                value = queryString,
+                onValueChange = {
+                    queryString = it
+                    onStringQueryChanged(it)
+                },
                 modifier = Modifier.fillMaxWidth(),
                 predictions = predictionsState,
                 onLocationSelected = onLocationSelected
@@ -150,11 +145,7 @@ fun LocationPickerScreenContent(
                         }
                     }
                 ) {
-                    Marker(
-                        state = markerState,
-                        title = "Cairo",
-                        snippet = "Cairo Snippet"
-                    )
+                    Marker(state = markerState)
                 }
 
                 LaunchedEffect(locationState) {
@@ -182,10 +173,4 @@ fun LocationSearchBar(
         modifier = modifier,
         placeHolderText = stringResource(R.string.search_for_places)
     )
-}
-
-@Preview
-@Composable
-private fun LocationPickerScreenPreview() {
-
 }

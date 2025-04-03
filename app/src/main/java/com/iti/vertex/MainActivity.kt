@@ -140,9 +140,7 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                 locationClient.lastLocation.addOnSuccessListener {
                     it?.let {
                         Log.i(TAG, "handleGpsProvider: current location is lat=${it.latitude}, long=${it.longitude}")
-                        val geoCoder = Geocoder(this)
-                        val name = geoCoder.getFromLocation(it.latitude, it.longitude, 1) ?: emptyList()
-                        val myLocation = MyLocation(lat = it.latitude, long = it.longitude, cityName = name.first().countryName ?: "NONE")
+                        val myLocation = MyLocation(lat = it.latitude, long = it.longitude, cityName = "")
                         lifecycleScope.launch { settingsRepository.setCurrentLocation(myLocation) }
                     }
                 }

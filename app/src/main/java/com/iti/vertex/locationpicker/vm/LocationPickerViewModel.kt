@@ -16,11 +16,13 @@ import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 
 private const val TAG = "LocationPickerViewModel"
@@ -37,14 +39,18 @@ class LocationPickerViewModel(
     private val _locationState: MutableStateFlow<LatLng> = MutableStateFlow(LatLng(0.0, 0.0))
     val locationState = _locationState.asStateFlow()
 
-    private val _searchQueryState = MutableStateFlow("")
-    val searchQueryState = _searchQueryState.asStateFlow()
-
     private val _predictionsState = MutableStateFlow(emptyList<AutocompletePrediction>())
     val predictionsState = _predictionsState.asStateFlow()
 
+    private val _searchQuerySharedFlow = MutableSharedFlow<String>()
+
     init {
         loadCurrentLocation()
+        viewModelScope.launch {
+            _searchQuerySharedFlow.debounce(1.seconds).distinctUntilChanged().collect {
+                if(it.isNotBlank()) fetchLocationPredictions(it)
+            }
+        }
     }
 
     fun addSelectedLocationToFavorite() {
@@ -71,8 +77,6 @@ class LocationPickerViewModel(
         }
     }
 
-    fun updateSearchQueryState(query: String) = _searchQueryState.update { query }
-
     fun updateLocationState(latLng: LatLng) { _locationState.update { latLng } }
 
     private fun loadCurrentLocation() {
@@ -89,7 +93,7 @@ class LocationPickerViewModel(
         }
     }
 
-    fun fetchLocationPredictions(query: String) {
+    private fun fetchLocationPredictions(query: String) {
         viewModelScope.launch {
             val response = placesClient.awaitFindAutocompletePredictions {
                 this.query = query
@@ -117,5 +121,8 @@ class LocationPickerViewModel(
 
     }
 
+    fun updateSearchQuerySharedFlow(query: String) {
+        viewModelScope.launch { _searchQuerySharedFlow.emit(query) }
+    }
 
 }
