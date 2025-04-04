@@ -30,6 +30,7 @@ import com.iti.vertex.R
 
 import com.iti.vertex.home.states.CurrentWeatherUiState
 import com.iti.vertex.home.toWeatherIconUrl
+import com.iti.vertex.utils.getStringResFromConditionCode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -69,7 +70,7 @@ fun CurrentWeatherCard(
 
                 // description
                 Text(
-                    text = state.weather.description,
+                    text = stringResource(getStringResFromConditionCode(state.weather.id)),
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleLarge,

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import com.iti.vertex.data.dtos.MainData
 import com.iti.vertex.data.dtos.SimpleForecastItem
 import com.iti.vertex.data.dtos.Weather
 import com.iti.vertex.home.toWeatherIconUrl
+import com.iti.vertex.utils.getStringResFromConditionCode
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -56,7 +58,7 @@ fun ForecastSectionListItem(
             )
 
             Text(
-                text = state.weather.first().description,
+                text = stringResource(getStringResFromConditionCode(state.weather.first().id)),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )

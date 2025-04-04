@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.iti.vertex.home.states.SimpleCardConditionItemUiState
 
@@ -20,7 +21,6 @@ fun SimpleWeatherConditionItemCard(
     state: SimpleCardConditionItemUiState,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     Card(
         modifier = modifier.padding(8.dp)
     ) {
@@ -31,12 +31,12 @@ fun SimpleWeatherConditionItemCard(
         )
 
         Text(
-            text = "${state.value} ${context.getString(state.unit)}",
+            text = "${state.value} ${stringResource(state.unit)}",
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(4.dp)
         )
 
         Text(
-            text = context.getString(state.label),
+            text = stringResource(state.label),
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(4.dp)
         )
     }

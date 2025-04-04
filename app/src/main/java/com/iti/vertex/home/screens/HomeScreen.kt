@@ -1,7 +1,5 @@
 package com.iti.vertex.home.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,10 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.vertex.R
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
+import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
+import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.details.screens.ForecastSection
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
 import com.iti.vertex.home.components.CurrentWeatherSection
-import com.iti.vertex.home.states.ForecastUiState
 import com.iti.vertex.home.vm.HomeViewModel
 import com.iti.vertex.utils.Result
 import kotlinx.coroutines.launch
@@ -47,6 +46,7 @@ fun HomeScreen(
     val currentWeatherState = viewModel.currentWeatherState.collectAsStateWithLifecycle()
     val forecastState = viewModel.forecastState.collectAsStateWithLifecycle()
     val isRefreshingState = viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val windSpeedUnitState = viewModel.windSpeedUnitState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -70,6 +70,7 @@ fun HomeScreen(
             HomeScreenContent(
                 currentWeatherState = currentWeatherState.value,
                 forecastState = forecastState.value,
+                windSpeedUnit = windSpeedUnitState.value,
                 modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp)
             )
         }
@@ -77,11 +78,11 @@ fun HomeScreen(
 
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreenContent(
     currentWeatherState: Result<out CurrentWeatherResponse>,
-    forecastState: Result<out ForecastUiState>,
+    forecastState: Result<out ForecastEntity>,
+    windSpeedUnit: WindSpeedUnit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -104,7 +105,7 @@ fun HomeScreenContent(
                 )
 
                 CurrentWeatherConditionsSection(
-                    state = currentWeatherState.data.toCurrentWeatherUiState().toConditionsList()
+                    state = currentWeatherState.data.toCurrentWeatherUiState().toConditionsList(windSpeedUnit)
                 )
             }
         }
@@ -121,7 +122,7 @@ fun HomeScreenContent(
             }
             is Result.Success -> {
                 ForecastSection(
-                    state = forecastState.data.toEntity()
+                    state = forecastState.data
                 )
             }
         }

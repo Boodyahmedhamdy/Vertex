@@ -1,6 +1,9 @@
 package com.iti.vertex.favorite.screens
 
+import android.Manifest
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +66,11 @@ fun FavoritesScreen(
     val selectedItemToDelete = viewModel.selectedItemToBeDeleted.collectAsStateWithLifecycle().value
     val scope = rememberCoroutineScope()
     val snackBarState = remember { SnackbarHostState() }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        if(result.values.all { it }) navController.navigate(Routes.LocationPickerScreenRoute)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.messageSharedFlow.collect {
@@ -76,7 +84,9 @@ fun FavoritesScreen(
         topBar = { TopAppBar(title = { Text(text = stringResource(R.string.favorites)) }) },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate(Routes.LocationPickerScreenRoute)
+                permissionLauncher.launch(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                )
             },) {
                 Icon(imageVector = Icons.Filled.Place, contentDescription = "add locationState")
             }

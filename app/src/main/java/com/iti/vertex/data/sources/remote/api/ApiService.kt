@@ -1,6 +1,5 @@
 package com.iti.vertex.data.sources.remote.api
 
-import com.iti.vertex.BuildConfig
 import com.iti.vertex.data.dtos.FullForecastResponse
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import retrofit2.http.GET
@@ -13,14 +12,12 @@ interface ApiService {
     suspend fun getFullForecast(
         @Query("lat") lat: Double,
         @Query("lon") long: Double,
-        @Query("units") units: String = "metric"
     ): FullForecastResponse
 
     @GET("weather")
     suspend fun getCurrentWeather(
         @Query("lat") lat: Double,
         @Query("lon") long: Double,
-        @Query("units") units: String = "metric"
     ): CurrentWeatherResponse
 
 

@@ -7,12 +7,10 @@ import com.iti.vertex.R
 import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.repos.forecast.IForecastRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
+import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.settings.MyLocation
-import com.iti.vertex.home.states.ForecastUiState
-import com.iti.vertex.home.states.HomeScreenUiState
-import com.iti.vertex.home.toUiState
+import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.utils.Result
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -32,7 +30,7 @@ class HomeViewModel(
     private val _currentWeatherState: MutableStateFlow<Result<out CurrentWeatherResponse>> = MutableStateFlow(Result.Loading)
     val currentWeatherState = _currentWeatherState.asStateFlow()
 
-    private val _forecastState: MutableStateFlow<Result<out ForecastUiState>> = MutableStateFlow(Result.Loading)
+    private val _forecastState: MutableStateFlow<Result<out ForecastEntity>> = MutableStateFlow(Result.Loading)
     val forecastState = _forecastState.asStateFlow()
 
     private val _messageSharedFlow = MutableSharedFlow<Int>()
@@ -41,6 +39,9 @@ class HomeViewModel(
     private val _isRefreshing = MutableStateFlow<Boolean>(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
+    private val _windSpeedUnitState = MutableStateFlow<WindSpeedUnit>(WindSpeedUnit.METER_PER_SECOND)
+    val windSpeedUnitState = _windSpeedUnitState.asStateFlow()
+
     private lateinit var location: MyLocation
 
     init {
@@ -48,6 +49,7 @@ class HomeViewModel(
             settingsRepo.getCurrentLocation().collect {currentLocation ->
                 Log.i(TAG, "myLocation: $currentLocation")
                 location = currentLocation
+                getCurrentWindSpeedUnit()
                 loadCurrentWeather(lat = location.lat, long = location.long)
                 loadForecast(lat = location.lat, long =  location.long)
             }
@@ -57,8 +59,19 @@ class HomeViewModel(
     private fun loadForecast(lat: Double, long: Double) {
         viewModelScope.launch {
             try {
-                val data = repository.getForecast(lat = lat, long = long).toUiState()
-                _forecastState.update { Result.Success(data) }
+                val data = repository.getForecast(lat = lat, long = long).toForecastEntity()
+
+
+                val tempUnit = settingsRepo.getCurrentTempUnit().first()
+                val newList = data.list.map { currentItem ->
+                    val newTemp = tempUnit.converter(currentItem.mainData.temp)
+                    val tempItem = currentItem.copy(
+                        mainData = currentItem.mainData.copy(temp =  newTemp)
+                    )
+                    tempItem
+                }
+
+                _forecastState.update { Result.Success(data.copy(list =  newList)) }
                 _messageSharedFlow.emit(R.string.loaded_forecast_successfully)
             } catch (ex: IOException) {
                 _forecastState.update { Result.Error(ex.message ?: "Error while getting forecast") }
@@ -75,7 +88,17 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val data = repository.getFavoriteForecastByLatLong(lat, long)
-                _forecastState.update { Result.Success(data.toUiState()) }
+
+                val tempUnit = settingsRepo.getCurrentTempUnit().first()
+                val newList = data.list.map { currentItem ->
+                    val newTemp = tempUnit.converter(currentItem.mainData.temp)
+                    val tempItem = currentItem.copy(
+                        mainData = currentItem.mainData.copy(temp =  newTemp)
+                    )
+                    tempItem
+                }
+
+                _forecastState.update { Result.Success(data.copy(list = newList)) }
                 Log.i(TAG, "loadForecastFromFavorite: success")
             } catch (ex: Exception) {
                 Log.e(TAG, "loadForecastFromFavorite: failed")
@@ -89,8 +112,15 @@ class HomeViewModel(
         Log.i(TAG, "loadCurrentWeather: started")
         viewModelScope.launch {
             try {
-                val data = repository.getCurrentWeather(lat = lat, long = long)
-                _currentWeatherState.update { Result.Success(data) }
+                val response = repository.getCurrentWeather(lat = lat, long = long)
+                val tempUnit = settingsRepo.getCurrentTempUnit().first()
+
+                val newMain = response.main.copy(
+                    feelsLike = tempUnit.converter(response.main.feelsLike),
+                    temp = tempUnit.converter(response.main.temp)
+                )
+
+                _currentWeatherState.update { Result.Success(response.copy(main = newMain)) }
                 Log.i(TAG, "loadCurrentWeather: success")
             } catch (ex: Exception) {
                 _currentWeatherState.update { Result.Error(ex.message ?: "Error while getting current weather") }
@@ -104,7 +134,6 @@ class HomeViewModel(
         viewModelScope.launch {
             Log.i(TAG, "refresh: started")
             _isRefreshing.update { true }
-            delay(1000)
             try {
                 loadForecast(lat = location.lat, long = location.long)
                 loadCurrentWeather(lat = location.lat, long = location.long)
@@ -115,6 +144,12 @@ class HomeViewModel(
             }
             Log.i(TAG, "refresh: finished")
             _isRefreshing.update { false }
+        }
+    }
+
+    fun getCurrentWindSpeedUnit() {
+        viewModelScope.launch {
+            _windSpeedUnitState.update { settingsRepo.getCurrentWindSpeedUnit().first() }
         }
     }
 

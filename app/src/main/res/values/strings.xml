@@ -40,4 +40,71 @@
     <string name="location_forecast_details">Forecast Details</string>
     <string name="notification">Notification</string>
     <string name="alarm">Alarm</string>
+
+
+<!--    weather conditions-->
+    <string name="thunderstorm_light_rain">Thunderstorm with light rain</string>
+    <string name="thunderstorm_rain">Thunderstorm with rain</string>
+    <string name="thunderstorm_heavy_rain">Thunderstorm with heavy rain</string>
+    <string name="light_thunderstorm">Light thunderstorm</string>
+    <string name="thunderstorm">Thunderstorm</string>
+    <string name="heavy_thunderstorm">Heavy thunderstorm</string>
+    <string name="ragged_thunderstorm">Ragged thunderstorm</string>
+    <string name="thunderstorm_light_drizzle">Thunderstorm with light drizzle</string>
+    <string name="thunderstorm_drizzle">Thunderstorm with drizzle</string>
+    <string name="thunderstorm_heavy_drizzle">Thunderstorm with heavy drizzle</string>
+
+    <string name="light_intensity_drizzle">Light intensity drizzle</string>
+    <string name="drizzle">Drizzle</string>
+    <string name="heavy_intensity_drizzle">Heavy intensity drizzle</string>
+    <string name="light_intensity_drizzle_rain">Light intensity drizzle rain</string>
+    <string name="drizzle_rain">Drizzle rain</string>
+    <string name="heavy_intensity_drizzle_rain">Heavy intensity drizzle rain</string>
+    <string name="shower_rain_and_drizzle">Shower rain and drizzle</string>
+    <string name="heavy_shower_rain_and_drizzle">Heavy shower rain and drizzle</string>
+    <string name="shower_drizzle">Shower drizzle</string>
+
+    <string name="light_rain">Light rain</string>
+    <string name="moderate_rain">Moderate rain</string>
+    <string name="heavy_intensity_rain">Heavy intensity rain</string>
+    <string name="very_heavy_rain">Very heavy rain</string>
+    <string name="extreme_rain">Extreme rain</string>
+    <string name="freezing_rain">Freezing rain</string>
+    <string name="light_intensity_shower_rain">Light intensity shower rain</string>
+    <string name="shower_rain">Shower rain</string>
+    <string name="heavy_intensity_shower_rain">Heavy intensity shower rain</string>
+    <string name="ragged_shower_rain">Ragged shower rain</string>
+
+    <string name="snow_condition_600">light snow</string>
+    <string name="snow_condition_601">snow</string>
+    <string name="snow_condition_602">heavy snow</string>
+    <string name="snow_condition_611">sleet</string>
+    <string name="snow_condition_612">light shower sleet</string>
+    <string name="snow_condition_613">shower sleet</string>
+    <string name="snow_condition_615">light rain and snow</string>
+    <string name="snow_condition_616">rain and snow</string>
+    <string name="snow_condition_620">light shower snow</string>
+    <string name="snow_condition_621">shower snow</string>
+    <string name="snow_condition_622">heavy shower snow</string>
+
+    <string name="atmosphere_condition_701">mist</string>
+    <string name="atmosphere_condition_711">smoke</string>
+    <string name="atmosphere_condition_721">haze</string>
+    <string name="atmosphere_condition_731">sand/dust whirls</string>
+    <string name="atmosphere_condition_741">fog</string>
+    <string name="atmosphere_condition_751">sand</string>
+    <string name="atmosphere_condition_761">dust</string>
+    <string name="atmosphere_condition_762">volcanic ash</string>
+    <string name="atmosphere_condition_771">squalls</string>
+    <string name="atmosphere_condition_781">tornado</string>
+
+    <string name="weather_condition_800">clear sky</string>
+    <string name="weather_condition_801">few clouds</string>
+    <string name="weather_condition_802">scattered clouds</string>
+    <string name="weather_condition_803">broken clouds</string>
+    <string name="weather_condition_804">overcast clouds</string>
+    <string name="percentage">%</string>
+    <string name="meter">meter</string>
+    <string name="hpa">hPa</string>
+    <string name="humidity">Humidity</string>
 </resources>

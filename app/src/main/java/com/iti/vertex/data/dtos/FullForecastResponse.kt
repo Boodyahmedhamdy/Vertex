@@ -13,12 +13,12 @@ data class FullForecastResponse(
     val list: List<SimpleForecastItem> = listOf(),
 
 ) {
-    fun toUiState(): ForecastUiState {
+/*    fun toUiState(): ForecastUiState {
         return ForecastUiState(
             city = city,
             list = list
         )
-    }
+    }*/
 
     fun toForecastEntity(): ForecastEntity = ForecastEntity(
         city = city,

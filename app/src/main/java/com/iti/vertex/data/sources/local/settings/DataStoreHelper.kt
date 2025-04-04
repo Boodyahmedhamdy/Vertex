@@ -147,6 +147,6 @@ enum class WindSpeedUnit(
     val converter: (Double) -> Double,
     @StringRes val displayName: Int = R.string.settings
 ) {
-    MILE_PER_HOUR(converter = { it }, displayName = R.string.mile_per_hour), // default value
-    METER_PER_SECOND(converter = { it * 0.44704 }, displayName = R.string.meter_per_second)
+    MILE_PER_HOUR(converter = { it * 2.23694 }, displayName = R.string.mile_per_hour), // default value
+    METER_PER_SECOND(converter = { it }, displayName = R.string.meter_per_second)
 }
