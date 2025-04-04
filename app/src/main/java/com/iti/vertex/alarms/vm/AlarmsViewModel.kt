@@ -11,6 +11,7 @@ import androidx.work.workDataOf
 import com.iti.vertex.R
 import com.iti.vertex.alarms.workers.AlarmWorker
 import com.iti.vertex.alarms.VertexAlarmManager
+import com.iti.vertex.alarms.workers.AlertWorker
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
@@ -67,6 +68,32 @@ class AlarmsViewModel(
         }
     }
 
+    fun scheduleAlert(startTime: Long) {
+        viewModelScope.launch {
+            val currentCity = settingsRepo.getCurrentLocation().first().cityName
+            val id = UUID.randomUUID()
+            val alarmEntity = AlarmEntity(
+                id = id.toString(),
+                startTime = startTime,
+                city = currentCity,
+                _notifyingMethodState.value
+            )
+            val workData = workDataOf("ID_KEY" to alarmEntity.id)
+            val delay = startTime - System.currentTimeMillis()
+
+            val workRequest = OneTimeWorkRequestBuilder<AlertWorker>()
+                .setInputData(workData)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .setId(id)
+                .build()
+
+            alarmsRepository.insertAlarm(alarmEntity)
+            Log.i(TAG, "scheduleAlert: inserted alarm with id ${alarmEntity.id}")
+            workManager.enqueue(workRequest)
+            Log.i(TAG, "scheduleAlert: enqueued work with id: ${workRequest.id}")
+
+        }
+    }
 
     fun scheduleAlarm(startTime: Long) {
         viewModelScope.launch {

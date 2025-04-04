@@ -1,25 +1,20 @@
 package com.iti.vertex.alarms.workers
 
-import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.iti.vertex.alarms.VertexNotificationManager
-import com.iti.vertex.alarms.vm.NotifyingMethod
+import com.iti.vertex.alarms.alerts.AlertsService
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.sources.local.alarms.AlarmsLocalDataSource
 import com.iti.vertex.data.sources.local.db.DatabaseHelper
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 
-private const val TAG = "AlarmWorker"
-class AlarmWorker(private val appContext: Context, params: WorkerParameters) :
-    CoroutineWorker(appContext, params) {
-
-    private val notificationManager = VertexNotificationManager(
-        appContext, appContext.getSystemService(NotificationManager::class.java)
-    )
-
+private const val TAG = "AlertWorker"
+class AlertWorker(private val appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext,
+    params
+) {
     private val alarmsRepository = AlarmsRepository.getInstance(
         localDataSource = AlarmsLocalDataSource(DatabaseHelper.getAlarmsDao(appContext))
     )
@@ -31,8 +26,11 @@ class AlarmWorker(private val appContext: Context, params: WorkerParameters) :
             val entity: AlarmEntity = alarmsRepository.getAlarmByID(id)
             Log.i(TAG, "doWork: got temp alarm: $entity")
 
-            notificationManager.showAlarmNotification(entity)
-            Log.i(TAG, "doWork: notification fired ")
+
+            val intent = Intent(appContext, AlertsService::class.java).apply {
+                putExtra("DESC", "You Have Notification about ${entity.city}")
+            }
+            appContext.startService(intent)
 
             // delete after ringing
             alarmsRepository.deleteAlarm(entity)
@@ -42,6 +40,6 @@ class AlarmWorker(private val appContext: Context, params: WorkerParameters) :
         } catch (ex: Exception) {
             Result.failure()
         }
-    }
 
+    }
 }

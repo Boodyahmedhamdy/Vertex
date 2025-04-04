@@ -1,7 +1,10 @@
 package com.iti.vertex.alarms.screens
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,10 +35,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.vertex.R
+import com.iti.vertex.alarms.alerts.AlertsService
 import com.iti.vertex.alarms.components.AlarmPickerBottomSheetContent
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.alarms.vm.AlarmsViewModel
@@ -51,6 +56,8 @@ fun AlarmsScreen(
     viewModel: AlarmsViewModel,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     val alarmsState = viewModel.alarmsState.collectAsStateWithLifecycle()
     val showBottomSheetState = viewModel.showBottomSheetState.collectAsStateWithLifecycle()
     val notifyingMethodState = viewModel.notifyingMethodState.collectAsStateWithLifecycle()
@@ -64,6 +71,12 @@ fun AlarmsScreen(
         }
     }
 
+    val overLayPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        Log.i(TAG, "AlarmsScreen: accepted to display over other apps")
+    }
+
     AlarmsScreenContent(
         alarmsState = alarmsState.value,
         showBottomSheetState = showBottomSheetState.value,
@@ -75,11 +88,29 @@ fun AlarmsScreen(
         onBottomSheetDismissRequest = { viewModel.updateShowBottomSheetState(false) },
         onDateTimeSelected = {
             viewModel.updateShowBottomSheetState(false)
-            viewModel.scheduleAlarm(it)
+            when(notifyingMethodState.value) {
+                NotifyingMethod.NOTIFICATION -> viewModel.scheduleAlarm(it)
+                NotifyingMethod.ALARM -> viewModel.scheduleAlert(it)
+            }
         },
         modifier = modifier,
         notifyingMethodState = notifyingMethodState.value,
-        onMethodClicked = { viewModel.updateNotifyingMethodState(it) },
+        onMethodClicked = {
+            when(it) {
+                NotifyingMethod.NOTIFICATION -> viewModel.updateNotifyingMethodState(it)
+                NotifyingMethod.ALARM -> {
+                    if(!Settings.canDrawOverlays(context)) {
+                        val intent = Intent(
+                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:${context.packageName}")
+                        )
+                        overLayPermissionLauncher.launch(intent)
+                    } else {
+                        viewModel.updateNotifyingMethodState(it)
+                    }
+                }
+            }
+        },
         onDeleteAlarmClicked = {
             viewModel.cancelAlarm(it.id)
         },
