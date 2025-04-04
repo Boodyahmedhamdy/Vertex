@@ -29,7 +29,6 @@ fun CurrentWeatherConditionsSection(
         modifier = modifier.padding(8.dp)
     ) {
         FlowRow (
-            maxItemsInEachRow = 3,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {

@@ -114,8 +114,6 @@ class LocationPickerViewModel(
 
             _locationState.update { selectedPlace.location ?: it }
             _predictionsState.update { emptyList() }
-//            _searchQueryState.update { "" }
-
         }
 
 

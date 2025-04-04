@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,6 +74,7 @@ class ForecastDaoTest {
         val result = dao.getForecastByLatLong(lat = city.coord.lat, lon = city.coord.lon)
 
         assertEquals(result, null)
+        assertNull(result)
     }
 
     @Test

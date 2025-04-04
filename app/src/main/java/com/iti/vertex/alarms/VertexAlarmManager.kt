@@ -29,8 +29,8 @@ class VertexAlarmManager(
         const val CANCEL_ALARM_ACTION = "CANCEL_ALARM_ACTION"
     }
 
-    @SuppressLint("MissingPermission")
-    fun schedule(alarmEntity: AlarmEntity) {
+//    @SuppressLint("MissingPermission")
+ /*   fun schedule(alarmEntity: AlarmEntity) {
         Log.i(TAG, "schedule: started")
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             action = SEND_ALARM_ACTION
@@ -43,8 +43,8 @@ class VertexAlarmManager(
         Log.i(TAG, "schedule: created intent")
 
         val pendingIntent = PendingIntent.getBroadcast(
-            context, alarmEntity.startTime.toInt(), intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            context, alarmEntity.id *//*alarmEntity.startTime.toInt()*//*, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         Log.i(TAG, "schedule: created pending intent")
 
@@ -66,11 +66,11 @@ class VertexAlarmManager(
             putExtra(ALARM_METHOD_KEY, alarmEntity.methodStringRes)
         }
         val pendingIntent = PendingIntent.getBroadcast(
-            context, alarmEntity.startTime.toInt(), intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            context, alarmEntity.id *//*alarmEntity.startTime.toInt()*//*, intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.cancel(pendingIntent)
         Log.i(TAG, "cancel: finished ")
-    }
+    }*/
 }
 

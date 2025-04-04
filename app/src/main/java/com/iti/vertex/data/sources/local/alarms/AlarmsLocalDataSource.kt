@@ -18,4 +18,16 @@ class AlarmsLocalDataSource(
         alarmsDao.deleteAlarm(alarmEntity)
     }
 
+    suspend fun getAlarmByStartTime(startTime: Long): AlarmEntity = withContext(Dispatchers.IO) {
+        alarmsDao.getAlarmByStartTime(startTime)
+    }
+
+    suspend fun deleteAlarmById(id: String) = withContext(Dispatchers.IO) {
+        alarmsDao.deleteAlarmById(id)
+    }
+
+    suspend fun getAlarmById(id: String): AlarmEntity = withContext(Dispatchers.IO) {
+        alarmsDao.getAlarmById(id)
+    }
+
 }

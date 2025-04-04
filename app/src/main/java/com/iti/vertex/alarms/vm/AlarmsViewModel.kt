@@ -5,8 +5,11 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.iti.vertex.R
+import com.iti.vertex.alarms.AlarmWorker
 import com.iti.vertex.alarms.VertexAlarmManager
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
@@ -20,6 +23,8 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "AlarmsViewModel"
 
@@ -62,30 +67,41 @@ class AlarmsViewModel(
         }
     }
 
+
     fun scheduleAlarm(startTime: Long) {
         viewModelScope.launch {
-            Log.i(TAG, "scheduleAlarm: started")
+            val currentCity = settingsRepo.getCurrentLocation().first().cityName
+            val id = UUID.randomUUID()
+            val alarmEntity = AlarmEntity(
+                id = id.toString(),
+                startTime = startTime,
+                city = currentCity,
+                _notifyingMethodState.value
+            )
 
-            val city = settingsRepo.getCurrentLocation().first().cityName
-            val alarmEntity = AlarmEntity(startTime = startTime, methodStringRes = _notifyingMethodState.value.displayName, city = city)
-            insertAlarm(alarmEntity)
-            vertexAlarmManager.schedule(alarmEntity)
-        }
-    }
+            val workData = workDataOf("ID_KEY" to alarmEntity.id)
 
+            val delay = startTime - System.currentTimeMillis()
+            Log.i(TAG, "scheduleAlarm: delay for ${delay / 1000} seconds")
 
-    private fun insertAlarm(alarmEntity: AlarmEntity) {
-        viewModelScope.launch {
+            val workRequest = OneTimeWorkRequestBuilder<AlarmWorker>()
+                .setInputData(workData)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .setId(id)
+                .build()
+
             alarmsRepository.insertAlarm(alarmEntity)
+            Log.i(TAG, "scheduleAlarm: inserted alarm with id ${alarmEntity.id}")
+            workManager.enqueue(workRequest)
+            Log.i(TAG, "scheduleAlarm: enqueued work with id: ${workRequest.id}")
         }
     }
 
-    fun cancelAlarm(alarmEntity: AlarmEntity) {
-        vertexAlarmManager.cancel(alarmEntity)
-    }
-
-    fun deleteAlarm(alarmEntity: AlarmEntity) {
-        viewModelScope.launch { alarmsRepository.deleteAlarm(alarmEntity) }
+    fun cancelAlarm(id: String) {
+        viewModelScope.launch {
+            alarmsRepository.deleteAlarmById(id)
+            workManager.cancelWorkById(UUID.fromString(id))
+        }
     }
 }
 

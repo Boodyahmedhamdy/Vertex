@@ -81,8 +81,7 @@ fun AlarmsScreen(
         notifyingMethodState = notifyingMethodState.value,
         onMethodClicked = { viewModel.updateNotifyingMethodState(it) },
         onDeleteAlarmClicked = {
-            viewModel.cancelAlarm(it)
-            viewModel.deleteAlarm(it)
+            viewModel.cancelAlarm(it.id)
         },
         onAlarmClicked = { Log.i(TAG, "AlarmsScreen: clicked on ${it}") },
     )
@@ -168,7 +167,7 @@ fun AlarmCard(
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(text = alarmEntity.city, style = MaterialTheme.typography.displaySmall)
                 Text(text = "From: ${alarmEntity.startTime.toReadableTime()}")
-                Text(text = "Method: ${stringResource(alarmEntity.methodStringRes)}")
+                Text(text = "Method: ${stringResource(alarmEntity.notifyingMethod.displayName)}")
             }
             IconButton(onClick = { onDeleteClicked(alarmEntity) }) {
                 Icon(Icons.Outlined.Delete, contentDescription = "Delete alarm", tint = MaterialTheme.colorScheme.error)

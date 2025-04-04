@@ -1,13 +1,13 @@
 package com.iti.vertex.data.sources.local.db.entities
 
-import androidx.annotation.StringRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.iti.vertex.alarms.vm.NotifyingMethod
 
 @Entity(tableName = "alarms")
 data class AlarmEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: String,
     val startTime: Long,
     val city: String,
-    @StringRes val methodStringRes: Int = 0
+    val notifyingMethod: NotifyingMethod
 )

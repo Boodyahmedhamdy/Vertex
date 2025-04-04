@@ -26,4 +26,12 @@ class AlarmsRepository private constructor(
     suspend fun deleteAlarm(alarmEntity: AlarmEntity) {
         localDataSource.deleteAlarm(alarmEntity)
     }
+
+    suspend fun deleteAlarmById(id: String) = localDataSource.deleteAlarmById(id)
+
+   suspend fun getAlarmByStartTime(startTime: Long): AlarmEntity = localDataSource.getAlarmByStartTime(startTime)
+   suspend fun getAlarmByID(id: String): AlarmEntity = localDataSource.getAlarmById(id)
+
+
+
 }

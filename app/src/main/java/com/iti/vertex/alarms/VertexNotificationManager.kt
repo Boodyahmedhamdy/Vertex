@@ -19,7 +19,7 @@ class VertexNotificationManager(
 
         val intent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
-            context, alarmEntity.id, intent, PendingIntent.FLAG_IMMUTABLE
+            context, alarmEntity.startTime.toInt(), intent, PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -30,7 +30,7 @@ class VertexNotificationManager(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(alarmEntity.id, notification)
+        notificationManager.notify(alarmEntity.startTime.toInt(), notification)
     }
 
 }

@@ -1,6 +1,9 @@
 package com.iti.vertex.settings.screens
 
+import android.Manifest
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -49,6 +52,13 @@ fun SettingsScreen(
     val locationProviderState = viewModel.locationProviderState.collectAsStateWithLifecycle()
     val locationState = viewModel.locationState.collectAsStateWithLifecycle()
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        if(result.values.all { it }) navController.navigate(Routes.LocationPickerScreenRoute)
+    }
+
+
 
     SettingsScreenContent(
         windSpeedUnitState = windSpeedState.value,
@@ -64,7 +74,9 @@ fun SettingsScreen(
                 LocationProvider.GPS -> {
                     Log.i(TAG, "SettingsScreen: gps selected")
                 }
-                LocationProvider.MAP -> navController.navigate(Routes.LocationPickerScreenRoute)
+                LocationProvider.MAP -> permissionLauncher.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                ))
             }
         },
         locationState = locationState.value,
