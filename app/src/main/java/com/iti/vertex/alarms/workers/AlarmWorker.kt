@@ -1,16 +1,16 @@
-package com.iti.vertex.alarms
+package com.iti.vertex.alarms.workers
 
 import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.iti.vertex.alarms.VertexNotificationManager
 import com.iti.vertex.alarms.vm.NotifyingMethod
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.sources.local.alarms.AlarmsLocalDataSource
 import com.iti.vertex.data.sources.local.db.DatabaseHelper
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
-
 
 private const val TAG = "AlarmWorker"
 class AlarmWorker(private val appContext: Context, params: WorkerParameters) :

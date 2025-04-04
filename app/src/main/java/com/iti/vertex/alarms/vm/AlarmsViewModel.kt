@@ -9,7 +9,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.iti.vertex.R
-import com.iti.vertex.alarms.AlarmWorker
+import com.iti.vertex.alarms.workers.AlarmWorker
 import com.iti.vertex.alarms.VertexAlarmManager
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
