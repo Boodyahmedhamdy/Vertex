@@ -40,12 +40,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.vertex.R
-import com.iti.vertex.alarms.alerts.AlertsService
 import com.iti.vertex.alarms.components.AlarmPickerBottomSheetContent
-import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.alarms.vm.AlarmsViewModel
 import com.iti.vertex.alarms.vm.NotifyingMethod
 import com.iti.vertex.alarms.vm.toReadableTime
+import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.favorite.screens.EmptyScreen
 import com.iti.vertex.utils.Result
 

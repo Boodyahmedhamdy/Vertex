@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.iti.vertex.alarms.VertexNotificationManager
-import com.iti.vertex.alarms.vm.NotifyingMethod
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
 import com.iti.vertex.data.sources.local.alarms.AlarmsLocalDataSource
 import com.iti.vertex.data.sources.local.db.DatabaseHelper

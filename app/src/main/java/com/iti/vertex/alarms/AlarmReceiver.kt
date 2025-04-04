@@ -1,14 +1,9 @@
 package com.iti.vertex.alarms
 
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.iti.vertex.data.repos.alarms.AlarmsRepository
-import com.iti.vertex.data.sources.local.alarms.AlarmsLocalDataSource
-import com.iti.vertex.data.sources.local.db.DatabaseHelper
-import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 
 private const val TAG = "AlarmReceiver"
 class AlarmReceiver : BroadcastReceiver() {
