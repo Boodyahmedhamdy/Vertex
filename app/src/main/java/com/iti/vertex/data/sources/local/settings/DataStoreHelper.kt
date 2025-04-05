@@ -62,7 +62,7 @@ class DataStoreHelper(private val context: Context) {
 
     // temp
     fun getCurrentTempUnit(): Flow<String> = context.dataStore.data.map { settings ->
-        settings[tempUnitKey] ?: TempUnit.KELVIN.name
+        settings[tempUnitKey] ?: TempUnit.Celsius.name
     }
     suspend fun setCurrentTempUnit(tempUnit: TempUnit) {
         context.dataStore.edit { settings ->

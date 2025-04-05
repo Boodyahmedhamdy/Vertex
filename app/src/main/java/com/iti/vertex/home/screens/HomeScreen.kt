@@ -1,14 +1,20 @@
 package com.iti.vertex.home.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -31,6 +37,7 @@ import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.details.screens.ForecastSection
+import com.iti.vertex.favorite.screens.EmptyScreen
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
 import com.iti.vertex.home.components.CurrentWeatherSection
 import com.iti.vertex.home.vm.HomeViewModel
@@ -71,7 +78,9 @@ fun HomeScreen(
                 currentWeatherState = currentWeatherState.value,
                 forecastState = forecastState.value,
                 windSpeedUnit = windSpeedUnitState.value,
-                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
             )
         }
     }
@@ -96,7 +105,7 @@ fun HomeScreenContent(
                 }
             }
             is Result.Error -> {
-                Text(text = currentWeatherState.message, color = MaterialTheme.colorScheme.error)
+                NoInternet(modifier = Modifier.fillMaxWidth())
             }
             is Result.Success -> {
                 CurrentWeatherSection(
@@ -118,7 +127,7 @@ fun HomeScreenContent(
                 }
             }
             is Result.Error -> {
-                Text(text = forecastState.message, color = MaterialTheme.colorScheme.error)
+                NoInternet(modifier = Modifier.fillMaxWidth())
             }
             is Result.Success -> {
                 ForecastSection(
@@ -126,6 +135,14 @@ fun HomeScreenContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun NoInternet(modifier: Modifier = Modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Icon(Icons.Outlined.Info, contentDescription = "No Internet", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(50.dp))
+        Text(text = stringResource(R.string.no_internet_connection), color = MaterialTheme.colorScheme.error)
     }
 }
 

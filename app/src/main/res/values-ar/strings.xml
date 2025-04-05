@@ -102,4 +102,16 @@
     <string name="meter">متر</string>
     <string name="hpa">مللي بار</string>
     <string name="humidity">الرطوبة</string>
+    <string name="no_internet_connection">لا يوجد اتصال بالانترنت</string>
+    <string name="set_as_current_location">تم تغيير موقعك بنجاح</string>
+    <string name="no_favorite_locations_yet">لا يوجد اماكن مفضلة بعد</string>
+    <string name="are_you_sure_to_delete">هل انت متاكد من الحذف؟</string>
+    <string name="delete">نعم, احذف</string>
+    <string name="cancel">لا, الغاء</string>
+    <string name="choose_suitable_time_to_set_alarm">اختر وقتا مناسبا لجدولة تنبيه</string>
+    <string name="select_date">اختر يوما</string>
+    <string name="select_time">اختر الساعة</string>
+    <string name="notification_method">طرسقة التنبيه</string>
+    <string name="save">حفظ</string>
+    <string name="no_alarms_yet">لا توجد تنبيهات حاليا</string>
 </resources>

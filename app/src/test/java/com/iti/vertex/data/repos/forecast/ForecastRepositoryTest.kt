@@ -7,6 +7,7 @@ import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.forecast.IForecastLocalDataSource
 import com.iti.vertex.data.sources.remote.forecast.IForecastRemoteDataSource
+import io.mockk.mockk
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
@@ -60,7 +61,8 @@ class ForecastRepositoryTest {
 
     @Before
     fun setup() {
-        remoteDataSource = DummyForecastRemoteDataSource()
+        remoteDataSource = mockk(relaxed = true)
+//        remoteDataSource = DummyForecastRemoteDataSource()
         localDataSource = FakeForecastLocalDataSource()
         repository = ForecastRepository.getInstance(remoteDataSource, localDataSource)
     }

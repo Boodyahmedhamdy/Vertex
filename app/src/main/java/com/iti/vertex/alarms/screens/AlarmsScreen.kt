@@ -149,7 +149,10 @@ fun AlarmsScreenContent(
                 .padding(innerPadding)) }
 
             is Result.Success -> {
-                if(alarmsState.data.isEmpty()) EmptyScreen(drawableRes = R.drawable.weather_air_pressure, "No Alarms Yet", modifier = Modifier.fillMaxSize())
+                if(alarmsState.data.isEmpty()) EmptyScreen(drawableRes = R.drawable.weather_air_pressure,
+                    stringResource(
+                        R.string.no_alarms_yet
+                    ), modifier = Modifier.fillMaxSize())
                 else LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()

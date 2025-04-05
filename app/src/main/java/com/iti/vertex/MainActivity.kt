@@ -54,7 +54,6 @@ const val LOCATION_PERMISSIONS_REQUEST_CODE = 12
 class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
-    private var showDialog: MutableState<Boolean> = mutableStateOf(false)
     private lateinit var settingsRepository: SettingsRepository
 
 
@@ -66,23 +65,8 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
         settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(DataStoreHelper(this)))
 
         setContent {
-            var showDialogState by remember { showDialog }
             val navController = rememberNavController()
             val backStackEntry by  navController.currentBackStackEntryAsState()
-
-            /*val locationPermissionLauncher = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { resultMap ->
-                val allGranted = resultMap.values.all { it == true }
-                if(allGranted) {
-                    handleMapProvider()
-                }
-            }
-
-
-            LaunchedEffect(Unit) {
-                locationPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
-            }*/
 
             VertexTheme {
                 Scaffold(
@@ -114,19 +98,10 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
 
-                    if(showDialogState) {
-                        PermissionDialog(
-                            onDismissRequest = { showDialog.value = false },
-                            onConfirmRequest = { requestLocationPermissions() }
-                        )
-                    } else {
-                        VertexNavHost(
-                            navController = navController,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding)
-                        )
-                    }
+                    VertexNavHost(
+                        navController = navController,
+                        modifier = Modifier.fillMaxSize().padding(innerPadding)
+                    )
                 }
             }
         }
@@ -137,9 +112,9 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        Log.i(TAG, "onResume: ")
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart: ")
         lifecycleScope.launch {
             settingsRepository.getCurrentLocationProvider().collect {currentLocationProvider ->
                 when(currentLocationProvider) {
@@ -183,10 +158,8 @@ class MainActivity : /*ComponentActivity*/ AppCompatActivity() {
             LOCATION_PERMISSIONS_REQUEST_CODE -> {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) { // user accepted everything
                     Log.i(TAG, "onRequestPermissionsResult: user accepted everything")
-                    showDialog.value = false
                 } else {
                     Log.e(TAG, "onRequestPermissionsResult: user denied the permissions")
-                    showDialog.value = true
                 }
             }
             else -> { Log.e(TAG, "onRequestPermissionsResult: unhandled permission request") }

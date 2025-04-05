@@ -18,12 +18,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +43,8 @@ import com.iti.vertex.favorite.screens.EmptyScreen
 import com.iti.vertex.home.components.ForecastSectionDay
 import com.iti.vertex.home.getForecastMap
 import com.iti.vertex.utils.Result
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @Composable
 fun ForecastDetailsScreen(
@@ -44,7 +52,17 @@ fun ForecastDetailsScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val snackBarHostState = remember { SnackbarHostState() }
+
     val uiState = viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.messageSharedFlow.collect {value ->
+            snackBarHostState.showSnackbar(message = context.getString(value))
+        }
+    }
+
 
     ForecastDetailsScreenContent(
         uiState = uiState.value,
@@ -52,6 +70,7 @@ fun ForecastDetailsScreen(
             viewModel.setCurrentLocation(it)
         },
         onClickBack = { navController.popBackStack() },
+        snackBarHostState = snackBarHostState,
         modifier = modifier
     )
 
@@ -63,6 +82,7 @@ fun ForecastDetailsScreenContent(
     uiState: Result<out ForecastEntity>,
     onSetCurrentLocationClicked: (myLocation: MyLocation) -> Unit,
     onClickBack: () -> Unit,
+    snackBarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
 
@@ -80,6 +100,7 @@ fun ForecastDetailsScreenContent(
         is Result.Success -> {
             Scaffold(
                 modifier = modifier,
+                snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
                 topBar = {
                     TopAppBar(
                         title = { Text(text = stringResource(R.string.location_forecast_details)) },

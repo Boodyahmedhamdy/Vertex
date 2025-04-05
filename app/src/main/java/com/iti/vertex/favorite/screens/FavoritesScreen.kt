@@ -20,12 +20,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -116,7 +118,7 @@ fun FavoritesScreen(
                 if(uiState.data.isEmpty()) {
                     EmptyScreen(
                         drawableRes = R.drawable.clouds,
-                        message = "No Favorite Locations yet!!",
+                        message = stringResource(R.string.no_favorite_locations_yet),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
@@ -155,7 +157,8 @@ fun FavoritesScreen(
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp).animateItem()
+                                    .padding(8.dp)
+                                    .animateItem()
                             )
                         }
                     }
@@ -181,15 +184,15 @@ fun ConfirmationDialog(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.fillMaxWidth().padding(8.dp)
             ) {
-                Text(text = "Are you sure to Delete ?")
+                Text(text = stringResource(R.string.are_you_sure_to_delete))
                 Row {
-                    TextButton(onClick = onConfirm) {
-                        Text("Delete")
+                    OutlinedButton(onClick = onConfirm, modifier = Modifier.padding(8.dp)) {
+                        Text(stringResource(R.string.delete))
                     }
-                    TextButton(onClick = onCancel) {
-                        Text("Cancel")
+                    Button(onClick = onCancel, modifier = Modifier.padding(8.dp)) {
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             }

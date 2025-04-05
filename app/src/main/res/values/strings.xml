@@ -107,4 +107,16 @@
     <string name="meter">meter</string>
     <string name="hpa">hPa</string>
     <string name="humidity">Humidity</string>
+    <string name="no_internet_connection">No Internet connection</string>
+    <string name="sat_as_current_location">Sat %1$s as current location</string>
+    <string name="no_favorite_locations_yet">No Favorite Locations yet!!</string>
+    <string name="are_you_sure_to_delete">Are you sure to Delete ?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose_suitable_time_to_set_alarm">Choose Suitable Time To Set Alarm</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="notification_method">Notification Method</string>
+    <string name="save">Save</string>
+    <string name="no_alarms_yet">No Alarms Yet</string>
 </resources>

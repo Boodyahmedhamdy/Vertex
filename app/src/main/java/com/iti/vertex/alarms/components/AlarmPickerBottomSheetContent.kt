@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.iti.vertex.R
 import com.iti.vertex.alarms.vm.NotifyingMethod
 import java.time.LocalDate
 import java.time.LocalTime
@@ -50,12 +51,12 @@ fun AlarmPickerBottomSheetContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
-        Text(text = "Choose Suitable Time To Set Alarm", style = MaterialTheme.typography.titleLarge)
+        Text(text = stringResource(R.string.choose_suitable_time_to_set_alarm), style = MaterialTheme.typography.titleLarge)
         HorizontalDivider(Modifier.fillMaxWidth())
 
         Text(text = "$selectedDateLabel $selectedTimeLabel")
 
-        Text(text = "Select Date")
+        Text(text = stringResource(R.string.select_date))
         OutlinedButton(modifier = Modifier.fillMaxWidth(),  onClick = {
             val datePickerDialog = DatePickerDialog(
                 context,
@@ -70,13 +71,13 @@ fun AlarmPickerBottomSheetContent(
             datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000 //Disables past dates.
             datePickerDialog.show()
         }) {
-            Text(text = selectedDate?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: "Select Date")
+            Text(text = selectedDate?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: stringResource(R.string.select_date))
         }
 
         HorizontalDivider(Modifier.fillMaxWidth())
 
 
-        Text(text = "Select Time")
+        Text(text = stringResource(R.string.select_time))
         OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = {
             val timePickerDialog = TimePickerDialog(
                 context,
@@ -90,11 +91,11 @@ fun AlarmPickerBottomSheetContent(
             )
             timePickerDialog.show()
         }) {
-            Text(text = selectedTime?.format(DateTimeFormatter.ISO_LOCAL_TIME) ?: "Select Time")
+            Text(text = selectedTime?.format(DateTimeFormatter.ISO_LOCAL_TIME) ?: stringResource(R.string.select_time))
         }
         HorizontalDivider(Modifier.fillMaxWidth())
 
-        Text(text = "Notification Method", style = MaterialTheme.typography.titleMedium)
+        Text(text = stringResource(R.string.notification_method), style = MaterialTheme.typography.titleMedium)
         Row {
             NotifyingMethod.entries.forEach { method ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -114,7 +115,7 @@ fun AlarmPickerBottomSheetContent(
                 val millis = zoneDateTime.toInstant().toEpochMilli()
                 onDateTimeSelected(millis)
             }) {
-                Text(text = "Save")
+                Text(text = stringResource(R.string.save))
             }
         }
     }

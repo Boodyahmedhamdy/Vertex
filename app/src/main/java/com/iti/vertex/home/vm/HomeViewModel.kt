@@ -11,6 +11,7 @@ import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.utils.Result
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -134,6 +135,7 @@ class HomeViewModel(
         viewModelScope.launch {
             Log.i(TAG, "refresh: started")
             _isRefreshing.update { true }
+            delay(500)
             try {
                 loadForecast(lat = location.lat, long = location.long)
                 loadCurrentWeather(lat = location.lat, long = location.long)

@@ -2,13 +2,16 @@ package com.iti.vertex.details.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iti.vertex.R
 import com.iti.vertex.data.repos.forecast.IForecastRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.settings.LocationProvider
 import com.iti.vertex.data.sources.local.settings.MyLocation
 import com.iti.vertex.utils.Result
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -21,6 +24,9 @@ class ForecastDetailsViewModel(
 
     private val _state: MutableStateFlow<Result<out ForecastEntity>> = MutableStateFlow(Result.Loading)
     val state = _state.asStateFlow()
+
+    private val _messageSharedFlow = MutableSharedFlow<Int>()
+    val messageSharedFlow = _messageSharedFlow.asSharedFlow()
 
     fun load(lat: Double, long: Double) {
         viewModelScope.launch {
@@ -48,6 +54,7 @@ class ForecastDetailsViewModel(
         viewModelScope.launch {
             settingsRepo.setCurrentLocation(myLocation)
             settingsRepo.setCurrentLocationProvider(LocationProvider.MAP)
+            _messageSharedFlow.emit(R.string.set_as_current_location)
         }
     }
 
