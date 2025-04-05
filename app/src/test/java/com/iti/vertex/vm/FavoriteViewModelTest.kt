@@ -35,7 +35,7 @@ class FavoriteViewModelTest {
         remoteDataSource = DummyForecastRemoteDataSource()
         localDataSource = FakeForecastLocalDataSource()
         repository = ForecastRepository.getInstance(remoteDataSource, localDataSource)
-        viewModel = FavoriteViewModel(repository as ForecastRepository)
+        viewModel = FavoriteViewModel(repository)
     }
 
     @Test

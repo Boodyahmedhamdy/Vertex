@@ -130,9 +130,6 @@ fun VertexNavHost(
 
             val viewModel: AlarmsViewModel = viewModel(
                 factory = AlarmsViewModelFactory(
-                    alarmManager = VertexAlarmManager(
-                        context = context, alarmManager = context.getSystemService(AlarmManager::class.java)
-                    ),
                     alarmsRepository = AlarmsRepository.getInstance(AlarmsLocalDataSource(alarmsDao = DatabaseHelper.getAlarmsDao(context))),
                     settingsRepository = SettingsRepository.getInstance(SettingsLocalDataSource(
                         DataStoreHelper(context)
@@ -163,9 +160,8 @@ fun VertexNavHost(
             )
         }
 
-
-        Places.initializeWithNewPlacesApiEnabled(context.applicationContext, BuildConfig.MAPS_API_KEY)
         composable<Routes.LocationPickerScreenRoute> {
+            Places.initializeWithNewPlacesApiEnabled(context.applicationContext, BuildConfig.MAPS_API_KEY)
             val viewModel: LocationPickerViewModel = viewModel(
                 factory = LocationPickerViewModelFactory(
                     forecastRepository = ForecastRepository.getInstance(

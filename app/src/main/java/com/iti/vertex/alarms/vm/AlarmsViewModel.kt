@@ -13,6 +13,7 @@ import com.iti.vertex.alarms.workers.AlarmWorker
 import com.iti.vertex.alarms.VertexAlarmManager
 import com.iti.vertex.alarms.workers.AlertWorker
 import com.iti.vertex.data.repos.alarms.AlarmsRepository
+import com.iti.vertex.data.repos.alarms.IAlarmsRepository
 import com.iti.vertex.data.repos.settings.ISettingsRepository
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.utils.Result
@@ -36,8 +37,7 @@ enum class NotifyingMethod(@StringRes val displayName: Int) {
 
 
 class AlarmsViewModel(
-    private val vertexAlarmManager: VertexAlarmManager,
-    private val alarmsRepository: AlarmsRepository,
+    private val alarmsRepository: IAlarmsRepository,
     private val settingsRepo: ISettingsRepository,
     private val workManager: WorkManager
 ): ViewModel() {

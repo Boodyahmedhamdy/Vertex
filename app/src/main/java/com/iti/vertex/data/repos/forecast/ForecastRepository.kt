@@ -26,7 +26,7 @@ class ForecastRepository private constructor(
         return remoteDataSource.getCurrentWeather(lat = lat, long = long)
     }
 
-    fun getFavoriteForecasts() = localDataSource.getAllForecast()
+    override fun getFavoriteForecasts() = localDataSource.getAllForecast()
 
     suspend fun addToFavorite(forecastEntity: ForecastEntity) {
         localDataSource.insertForecast(forecastEntity)

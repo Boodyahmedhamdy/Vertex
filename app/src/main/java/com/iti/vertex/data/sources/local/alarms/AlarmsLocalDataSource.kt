@@ -7,26 +7,26 @@ import kotlinx.coroutines.withContext
 
 class AlarmsLocalDataSource(
     private val alarmsDao: AlarmsDao
-) {
+) : IAlarmsLocalDataSource {
 
-    fun getAllAlarms() = alarmsDao.getAllAlarms()
-    suspend fun insertAlarm(alarmEntity: AlarmEntity) = withContext(Dispatchers.IO) {
+    override fun getAllAlarms() = alarmsDao.getAllAlarms()
+    override suspend fun insertAlarm(alarmEntity: AlarmEntity) = withContext(Dispatchers.IO) {
         alarmsDao.insertAlarm(alarmEntity)
     }
 
-    suspend fun deleteAlarm(alarmEntity: AlarmEntity) = withContext(Dispatchers.IO) {
+    override suspend fun deleteAlarm(alarmEntity: AlarmEntity) = withContext(Dispatchers.IO) {
         alarmsDao.deleteAlarm(alarmEntity)
     }
 
-    suspend fun getAlarmByStartTime(startTime: Long): AlarmEntity = withContext(Dispatchers.IO) {
+    override suspend fun getAlarmByStartTime(startTime: Long): AlarmEntity = withContext(Dispatchers.IO) {
         alarmsDao.getAlarmByStartTime(startTime)
     }
 
-    suspend fun deleteAlarmById(id: String) = withContext(Dispatchers.IO) {
+    override suspend fun deleteAlarmById(id: String) = withContext(Dispatchers.IO) {
         alarmsDao.deleteAlarmById(id)
     }
 
-    suspend fun getAlarmById(id: String): AlarmEntity = withContext(Dispatchers.IO) {
+    override suspend fun getAlarmById(id: String): AlarmEntity = withContext(Dispatchers.IO) {
         alarmsDao.getAlarmById(id)
     }
 

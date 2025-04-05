@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iti.vertex.data.repos.forecast.ForecastRepository
+import com.iti.vertex.data.repos.forecast.IForecastRepository
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.favorite.states.FavoriteScreenUiState
 import com.iti.vertex.utils.Result
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "FavoriteViewModel"
 
 class FavoriteViewModel(
-    private val forecastRepository: ForecastRepository
+    private val forecastRepository: IForecastRepository
 ): ViewModel() {
 
     private val _messageSharedFlow: MutableSharedFlow<String> = MutableSharedFlow()
@@ -47,34 +48,6 @@ class FavoriteViewModel(
                 .collect { favoriteList ->
                 Log.i(TAG, "loadFavoriteItems: collected list of size ${favoriteList.size}")
                 _favoriteScreenState.update { Result.Success(favoriteList) }
-            }
-        }
-    }
-
-    fun insertLocationToFavorite(lat: Double, long: Double) {
-        _favoriteScreenState.update { Result.Loading }
-        viewModelScope.launch {
-            try {
-                val remoteForecast = forecastRepository.getForecast(lat = lat, long = long)
-                val entity = remoteForecast.toForecastEntity()
-                forecastRepository.addToFavorite(entity)
-                _messageSharedFlow.emit("Added Successfully")
-            } catch (ex: Exception) {
-                // emitting error while cause the screen to become empty
-//                _favoriteScreenState.update { Result.Error(ex.message ?: "ERROR in inserting") }
-                _messageSharedFlow.emit("Error ${ex.message}")
-            }
-        }
-    }
-
-    fun getLocationByLatLong(lat: Double, long: Double) {
-        viewModelScope.launch {
-            Log.i(TAG, "getLocationByLatLong: passed $lat, $long")
-            try {
-                val entity = forecastRepository.getFavoriteForecastByLatLong(lat = lat, long = long)
-                Log.i(TAG, "getLocationByLatLong: $entity")
-            } catch (ex: Exception) {
-                _messageSharedFlow.emit(ex.message ?: "ERROR WHILE GETTING LOCATION FROM DB")
             }
         }
     }

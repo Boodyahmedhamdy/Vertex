@@ -2,10 +2,11 @@ package com.iti.vertex.data.repos.alarms
 
 import com.iti.vertex.data.sources.local.db.entities.AlarmEntity
 import com.iti.vertex.data.sources.local.alarms.AlarmsLocalDataSource
+import com.iti.vertex.data.sources.local.alarms.IAlarmsLocalDataSource
 
 class AlarmsRepository private constructor(
-    private val localDataSource: AlarmsLocalDataSource
-) {
+    private val localDataSource: IAlarmsLocalDataSource
+) : IAlarmsRepository {
 
     companion object {
         private var INSTANCE: AlarmsRepository? = null
@@ -17,20 +18,20 @@ class AlarmsRepository private constructor(
     }
 
 
-    fun getAllAlarms() = localDataSource.getAllAlarms()
+    override fun getAllAlarms() = localDataSource.getAllAlarms()
 
-    suspend fun insertAlarm(alarmEntity: AlarmEntity) {
+    override suspend fun insertAlarm(alarmEntity: AlarmEntity) {
         localDataSource.insertAlarm(alarmEntity)
     }
 
-    suspend fun deleteAlarm(alarmEntity: AlarmEntity) {
+    override suspend fun deleteAlarm(alarmEntity: AlarmEntity) {
         localDataSource.deleteAlarm(alarmEntity)
     }
 
-    suspend fun deleteAlarmById(id: String) = localDataSource.deleteAlarmById(id)
+    override suspend fun deleteAlarmById(id: String) = localDataSource.deleteAlarmById(id)
 
-   suspend fun getAlarmByStartTime(startTime: Long): AlarmEntity = localDataSource.getAlarmByStartTime(startTime)
-   suspend fun getAlarmByID(id: String): AlarmEntity = localDataSource.getAlarmById(id)
+
+   override suspend fun getAlarmByID(id: String): AlarmEntity = localDataSource.getAlarmById(id)
 
 
 
