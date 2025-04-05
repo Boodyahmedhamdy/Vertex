@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,7 +36,6 @@ import com.iti.vertex.data.dtos.current.CurrentWeatherResponse
 import com.iti.vertex.data.sources.local.db.entities.ForecastEntity
 import com.iti.vertex.data.sources.local.settings.WindSpeedUnit
 import com.iti.vertex.details.screens.ForecastSection
-import com.iti.vertex.favorite.screens.EmptyScreen
 import com.iti.vertex.home.components.CurrentWeatherConditionsSection
 import com.iti.vertex.home.components.CurrentWeatherSection
 import com.iti.vertex.home.vm.HomeViewModel

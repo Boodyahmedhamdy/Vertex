@@ -5,11 +5,13 @@
     <string name="favorites">المفضلة</string>
     <string name="alarms">المنبهات</string>
     <string name="settings">الاعدادات</string>
+    <string name="location_picker">اختيار الموقع</string>
     <string name="wind_speed">سرعة الرياح</string>
     <string name="clouds">الغيوم</string>
     <string name="pressure">الضغط</string>
     <string name="visibility">الرؤية</string>
     <string name="forecast_for_5_days">توقعات لخمس ايام</string>
+    <string name="delete_from_favorite_locations">حذف من الاماكن المفضلة</string>
     <string name="forecast_details">توقعات الطقس</string>
     <string name="meter_per_second">متر/ثانية</string>
     <string name="mile_per_hour">ميل/الساعة</string>
@@ -93,7 +95,9 @@
     <string name="weather_condition_804">غيوم ملبدة</string>
     <string name="feels_like">يبدوا كانه %1$s</string>
     <string name="country">البلد: %1$s</string>
+    <string name="location_forecast_details">تفاصيل</string>
     <string name="notification">اشعار</string>
+    <string name="search_location">ابحث مكان</string>
     <string name="search_for_location">البحث عن مكان</string>
     <string name="search_for_places">البحث عن مكان</string>
     <string name="back">عودة</string>
@@ -104,6 +108,7 @@
     <string name="humidity">الرطوبة</string>
     <string name="no_internet_connection">لا يوجد اتصال بالانترنت</string>
     <string name="set_as_current_location">تم تغيير موقعك بنجاح</string>
+    <string name="sat_as_current_location">تم جعله المكان الحالي</string>
     <string name="no_favorite_locations_yet">لا يوجد اماكن مفضلة بعد</string>
     <string name="are_you_sure_to_delete">هل انت متاكد من الحذف؟</string>
     <string name="delete">نعم, احذف</string>

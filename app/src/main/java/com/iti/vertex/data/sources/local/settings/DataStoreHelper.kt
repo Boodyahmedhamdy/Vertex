@@ -10,9 +10,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.iti.vertex.R
+import com.iti.vertex.data.sources.local.settings.LocationProvider.GPS
+import com.iti.vertex.data.sources.local.settings.TempUnit.KELVIN
+import com.iti.vertex.data.sources.local.settings.WindSpeedUnit.MILE_PER_HOUR
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

@@ -32,7 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,7 +46,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.iti.vertex.R
 import com.iti.vertex.favorite.components.FavoriteLocationListItem
-import com.iti.vertex.favorite.generateRandomLatLng
 import com.iti.vertex.favorite.vm.FavoriteViewModel
 import com.iti.vertex.navigation.routes.Routes
 import com.iti.vertex.utils.Result
