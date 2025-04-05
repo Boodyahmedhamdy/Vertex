@@ -117,7 +117,7 @@ enum class LocationProvider(
 ) { GPS(R.string.gps), MAP(R.string.map) }
 
 /**
- * @property DEVICE_DEFAULT is the default and depends on device language
+ * @property ENGLISH is the default and depends on device language
  * */
 enum class Language(
     @StringRes val displayName: Int = R.string.settings,
