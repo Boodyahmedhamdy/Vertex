@@ -23,7 +23,7 @@
     <string name="gps">GPS</string>
     <string name="arabic">العربية</string>
     <string name="english">الانجليزية</string>
-    <string name="device_default">لغة الجهاز)الانجليزية(</string>
+    <string name="device_default">لغة الجهاز</string>
     <string name="location_provider">مصدر الموقع</string>
     <string name="temperature_unit">وحدة قياس درجة الحرارة</string>
     <string name="language">اللغة</string>

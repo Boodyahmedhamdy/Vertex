@@ -87,13 +87,16 @@ class DataStoreHelper(private val context: Context) {
         context.dataStore.edit { settings ->
             settings[languageKey] = language.name
             withContext(Dispatchers.Main) {
-                val appLocale = LocaleListCompat.forLanguageTags(language.localeCode)
+                val appLocale = when(language) {
+                    Language.DEFAULT -> { LocaleListCompat.getEmptyLocaleList() }
+                    else -> { LocaleListCompat.forLanguageTags(language.localeCode) }
+                }
                 AppCompatDelegate.setApplicationLocales(appLocale)
             }
         }
     }
     fun getCurrentLanguage(): Flow<String> = context.dataStore.data.map { settings ->
-        settings[languageKey] ?: Language.ENGLISH.name
+        settings[languageKey] ?: Language.DEFAULT.name
     }
 
     // locationState provider
@@ -110,14 +113,14 @@ class DataStoreHelper(private val context: Context) {
 
 
 /**
- * @property GPS is the default
+ * @property MAP is the default
  * */
 enum class LocationProvider(
     @StringRes val displayName: Int = R.string.settings
 ) { GPS(R.string.gps), MAP(R.string.map) }
 
 /**
- * @property ENGLISH is the default and depends on device language
+ * @property DEFAULT is the default and depends on device language
  * */
 enum class Language(
     @StringRes val displayName: Int = R.string.settings,
@@ -125,6 +128,7 @@ enum class Language(
 ) {
     ARABIC(R.string.arabic, localeCode = "ar"),
     ENGLISH(R.string.english, localeCode = "en"),
+    DEFAULT(R.string.device_default, "")
 }
 
 /**
