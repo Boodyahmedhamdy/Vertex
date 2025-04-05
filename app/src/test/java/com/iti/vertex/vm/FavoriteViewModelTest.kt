@@ -39,7 +39,7 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun toggleShowDeleteLocationDialog() = runTest {
+    fun toggleShowDeleteLocationDialog_FirstTimeToToggle_ValueMustBeTrue() = runTest {
         // arrange
         // act
         viewModel.toggleShowDeleteLocationDialog()
@@ -50,7 +50,7 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun updateSelectedItemToBeDeleted() = runTest {
+    fun updateSelectedItemToBeDeleted_UpdatedWithNewItem_ValueMustBeTheSameAsPassed() = runTest {
 
         //arrange
         val newItem = ForecastEntity(city = City(coord = Coord(lat = 1.1, lon = 1.1)))
